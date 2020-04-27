@@ -28,29 +28,32 @@ func Async(bus EventBus) string {
 	return ""
 }
 
-// Poop synchronous call
-//
-//noinspection GoUnusedExportedFunctions
-func ReturnString() string {
-	return "poopie mcpooppants"
+type wrapper struct {
+	Value interface{} `json:"value"`
 }
 
-// ReturnPrimitive example
+// ReturnWrappedValue
 //
-//noinspection GoUnusedExportedFunction
-func ReturnPrimitive() int {
-	return 42
+//noinspection GoUnusedExportedFunctions
+func ReturnWrappedValue() (string, error) {
+	b, err := json.Marshal(&wrapper{
+		Value: 42,
+	})
+
+	if err != nil {
+		return "", err
+	}
+
+	return string(b), nil
 }
+
 
 // ReturnStruct we stringify due to the restrictions in the react bridge, we'll unmarshall in JS
 //
 //noinspection GoUnusedExportedFunction
 func ReturnStruct() (string, error) {
 	b, err := json.Marshal(&Foo{
-		Bar:   42,
-		Baz:   "hihihi",
-		Barry: []int{420, 69},
-		Billy: nil,
+		Bar:   420,
 	})
 
 	if err != nil {

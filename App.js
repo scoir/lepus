@@ -3,7 +3,7 @@
  * @flow strict-local
  */
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import {
     Alert,
     Button,
@@ -20,7 +20,7 @@ import {
 import {Colors,} from 'react-native/Libraries/NewAppScreen';
 
 const App: () => React$Node = () => {
-    const [welcome, setWelcome] = React.useState("i hope this changes");
+    const [welcome, setWelcome] = useState("i hope this changes");
 
     //register for async responses
     DeviceEventEmitter.addListener('default', (message) => {
@@ -28,25 +28,26 @@ const App: () => React$Node = () => {
         console.log(message)
     });
 
-    //non-async call
-    NativeModules.Nymble.stringy((data) => {
-        console.log("wat", data)
-        setWelcome(data);
-    });
+    useEffect(() => NativeModules.Nymble.getString((data) => {
+        setWelcome(unpack(data));
+    }, (err) => {
+        console.log("failed to invoke getString", err);
+    }), []);
+
+    const unpack = (data) => {
+        let d = JSON.parse(data);
+
+        if ('value' in d) {
+            return d.value
+        }
+        return d;
+    }
 
     const getStruct = () => {
-        console.log("hihihi");
-
-        NativeModules.Nymble.structy((data) => {
-            let oof = JSON.parse( data );
-            console.log("object", oof)
-            console.log("attr", oof.Bar)
-            console.log("attr", oof.Baz)
-            console.log("attr", oof.Barry)
-            console.log("attr", oof.Billy)
-            console.log("attr", oof.Nope)
+        NativeModules.Nymble.getStruct((data) => {
+            setWelcome(unpack(data).Bar);
         }, (err) => {
-            console.log("failed to invoke structy", err)
+            console.log("failed to invoke getStruct", err)
         });
     }
 
