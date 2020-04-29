@@ -19,6 +19,8 @@
 		348FE27E3BF5074F34961FC4 /* libPods-esquive-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 989C0D95DAA79A366E810D7F /* libPods-esquive-tvOS.a */; };
 		96789D0F92A5279EE635F2CC /* libPods-esquive.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8CB08D2EBA476C4DCFE686F7 /* libPods-esquive.a */; };
 		A4D6FC48D8F3ABBD719EC383 /* libPods-esquive-esquiveTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9607BCE15F6F85A9552F5710 /* libPods-esquive-esquiveTests.a */; };
+		BA1B0B5E24572A7F00C3A729 /* nymble.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BA1B0B5D24572A7F00C3A729 /* nymble.framework */; };
+		BA1B0B6124572AB000C3A729 /* Nymble.m in Sources */ = {isa = PBXBuildFile; fileRef = BA1B0B5F24572AB000C3A729 /* Nymble.m */; };
 		BCBA134FF13E424CE6E7E5FC /* libPods-esquive-tvOSTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 626D19ED53A645AC7EE02C5E /* libPods-esquive-tvOSTests.a */; };
 /* End PBXBuildFile section */
 
@@ -63,6 +65,9 @@
 		8CB08D2EBA476C4DCFE686F7 /* libPods-esquive.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-esquive.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		9607BCE15F6F85A9552F5710 /* libPods-esquive-esquiveTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-esquive-esquiveTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		989C0D95DAA79A366E810D7F /* libPods-esquive-tvOS.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-esquive-tvOS.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		BA1B0B5D24572A7F00C3A729 /* nymble.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = nymble.framework; path = esquive/nymble.framework; sourceTree = "<group>"; };
+		BA1B0B5F24572AB000C3A729 /* Nymble.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Nymble.m; path = esquive/Nymble.m; sourceTree = "<group>"; };
+		BA1B0B6024572AB000C3A729 /* Nymble.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Nymble.h; path = esquive/Nymble.h; sourceTree = "<group>"; };
 		E7DBDF0259B12A2AA3F26C59 /* Pods-esquive-esquiveTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-esquive-esquiveTests.release.xcconfig"; path = "Target Support Files/Pods-esquive-esquiveTests/Pods-esquive-esquiveTests.release.xcconfig"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 		ED2971642150620600B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = Platforms/AppleTVOS.platform/Developer/SDKs/AppleTVOS12.0.sdk/System/Library/Frameworks/JavaScriptCore.framework; sourceTree = DEVELOPER_DIR; };
@@ -83,6 +88,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				96789D0F92A5279EE635F2CC /* libPods-esquive.a in Frameworks */,
+				BA1B0B5E24572A7F00C3A729 /* nymble.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -125,6 +131,9 @@
 		13B07FAE1A68108700A75B9A /* esquive */ = {
 			isa = PBXGroup;
 			children = (
+				BA1B0B6024572AB000C3A729 /* Nymble.h */,
+				BA1B0B5F24572AB000C3A729 /* Nymble.m */,
+				BA1B0B5D24572A7F00C3A729 /* nymble.framework */,
 				008F07F21AC5B25A0029DE68 /* main.jsbundle */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
 				13B07FB01A68108700A75B9A /* AppDelegate.m */,
@@ -148,7 +157,6 @@
 				062811A85C05D15AD8C706BF /* Pods-esquive-tvOSTests.debug.xcconfig */,
 				4B3876D60799B681C15C7A45 /* Pods-esquive-tvOSTests.release.xcconfig */,
 			);
-			name = Pods;
 			path = Pods;
 			sourceTree = "<group>";
 		};
@@ -285,7 +293,7 @@
 		83CBB9F71A601CBA00E9B192 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 1130;
+				LastUpgradeCheck = 1140;
 				TargetAttributes = {
 					00E356ED1AD99517003FC87E = {
 						CreatedOnToolsVersion = 6.2;
@@ -530,6 +538,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BA1B0B6124572AB000C3A729 /* Nymble.m in Sources */,
 				13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */,
 				13B07FC11A68108700A75B9A /* main.m in Sources */,
 			);
@@ -584,6 +593,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = F3765624224A63DF8934F435 /* Pods-esquive-esquiveTests.debug.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
@@ -607,6 +617,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = E7DBDF0259B12A2AA3F26C59 /* Pods-esquive-esquiveTests.release.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				COPY_PHASE_STRIP = NO;
 				INFOPLIST_FILE = esquiveTests/Info.plist;
@@ -631,9 +642,48 @@
 				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = 1;
 				ENABLE_BITCODE = NO;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/esquive",
+				);
+				"FRAMEWORK_SEARCH_PATHS[arch=*]" = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/esquive",
+				);
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"$(inherited)",
 					"FB_SONARKIT_ENABLED=1",
+				);
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"${PODS_ROOT}/Headers/Public\"",
+					"\"${PODS_ROOT}/Headers/Public/CocoaAsyncSocket\"",
+					"\"${PODS_ROOT}/Headers/Public/CocoaLibEvent\"",
+					"\"${PODS_ROOT}/Headers/Public/DoubleConversion\"",
+					"\"${PODS_ROOT}/Headers/Public/FBLazyVector\"",
+					"\"${PODS_ROOT}/Headers/Public/FBReactNativeSpec\"",
+					"\"${PODS_ROOT}/Headers/Public/Flipper\"",
+					"\"${PODS_ROOT}/Headers/Public/Flipper-DoubleConversion\"",
+					"\"${PODS_ROOT}/Headers/Public/Flipper-Folly\"",
+					"\"${PODS_ROOT}/Headers/Public/Flipper-Glog\"",
+					"\"${PODS_ROOT}/Headers/Public/Flipper-PeerTalk\"",
+					"\"${PODS_ROOT}/Headers/Public/Flipper-RSocket\"",
+					"\"${PODS_ROOT}/Headers/Public/FlipperKit\"",
+					"\"${PODS_ROOT}/Headers/Public/OpenSSL-Universal\"",
+					"\"${PODS_ROOT}/Headers/Public/RCTRequired\"",
+					"\"${PODS_ROOT}/Headers/Public/RCTTypeSafety\"",
+					"\"${PODS_ROOT}/Headers/Public/React-Core\"",
+					"\"${PODS_ROOT}/Headers/Public/React-RCTText\"",
+					"\"${PODS_ROOT}/Headers/Public/React-cxxreact\"",
+					"\"${PODS_ROOT}/Headers/Public/React-jsi\"",
+					"\"${PODS_ROOT}/Headers/Public/React-jsiexecutor\"",
+					"\"${PODS_ROOT}/Headers/Public/React-jsinspector\"",
+					"\"${PODS_ROOT}/Headers/Public/ReactCommon\"",
+					"\"${PODS_ROOT}/Headers/Public/Yoga\"",
+					"\"${PODS_ROOT}/Headers/Public/YogaKit\"",
+					"\"${PODS_ROOT}/Headers/Public/glog\"",
+					"\"$(PODS_ROOT)/Headers/Private/React-Core\"",
+					"\"$(SRCROOT)/../node_modules/react-native/React/**\"",
 				);
 				INFOPLIST_FILE = esquive/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -657,6 +707,41 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = 1;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/esquive",
+				);
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"${PODS_ROOT}/Headers/Public\"",
+					"\"${PODS_ROOT}/Headers/Public/CocoaAsyncSocket\"",
+					"\"${PODS_ROOT}/Headers/Public/CocoaLibEvent\"",
+					"\"${PODS_ROOT}/Headers/Public/DoubleConversion\"",
+					"\"${PODS_ROOT}/Headers/Public/FBLazyVector\"",
+					"\"${PODS_ROOT}/Headers/Public/FBReactNativeSpec\"",
+					"\"${PODS_ROOT}/Headers/Public/Flipper\"",
+					"\"${PODS_ROOT}/Headers/Public/Flipper-DoubleConversion\"",
+					"\"${PODS_ROOT}/Headers/Public/Flipper-Folly\"",
+					"\"${PODS_ROOT}/Headers/Public/Flipper-Glog\"",
+					"\"${PODS_ROOT}/Headers/Public/Flipper-PeerTalk\"",
+					"\"${PODS_ROOT}/Headers/Public/Flipper-RSocket\"",
+					"\"${PODS_ROOT}/Headers/Public/FlipperKit\"",
+					"\"${PODS_ROOT}/Headers/Public/OpenSSL-Universal\"",
+					"\"${PODS_ROOT}/Headers/Public/RCTRequired\"",
+					"\"${PODS_ROOT}/Headers/Public/RCTTypeSafety\"",
+					"\"${PODS_ROOT}/Headers/Public/React-Core\"",
+					"\"${PODS_ROOT}/Headers/Public/React-RCTText\"",
+					"\"${PODS_ROOT}/Headers/Public/React-cxxreact\"",
+					"\"${PODS_ROOT}/Headers/Public/React-jsi\"",
+					"\"${PODS_ROOT}/Headers/Public/React-jsiexecutor\"",
+					"\"${PODS_ROOT}/Headers/Public/React-jsinspector\"",
+					"\"${PODS_ROOT}/Headers/Public/ReactCommon\"",
+					"\"${PODS_ROOT}/Headers/Public/Yoga\"",
+					"\"${PODS_ROOT}/Headers/Public/YogaKit\"",
+					"\"${PODS_ROOT}/Headers/Public/glog\"",
+					"\"$(PODS_ROOT)/Headers/Private/React-Core\"",
+					"\"$(SRCROOT)/../node_modules/react-native/React/**\"",
+				);
 				INFOPLIST_FILE = esquive/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				OTHER_LDFLAGS = (

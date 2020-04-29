@@ -1,8 +1,8 @@
-framework module "Pkg" {
+framework module "Nymble" {
 	header "ref.h"
-    header "Pkg.objc.h"
+    header "Nymble.objc.h"
     header "Universe.objc.h"
-    header "Pkg.h"
+    header "Nymble.h"
 
     export *
 }

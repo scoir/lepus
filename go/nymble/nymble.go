@@ -2,6 +2,7 @@ package nymble
 
 import (
 	"encoding/json"
+	"golang.org/x/tools/go/ssa/interp/testdata/src/errors"
 	"time"
 )
 
@@ -47,13 +48,12 @@ func ReturnWrappedValue() (string, error) {
 	return string(b), nil
 }
 
-
 // ReturnStruct we stringify due to the restrictions in the react bridge, we'll unmarshall in JS
 //
 //noinspection GoUnusedExportedFunction
 func ReturnStruct() (string, error) {
 	b, err := json.Marshal(&Foo{
-		Bar:   420,
+		Bar: 420,
 	})
 
 	if err != nil {
@@ -73,3 +73,9 @@ type Foo struct {
 type AnotherStruct struct {
 	Poop string
 }
+
+//noinspection GoUnusedExportedFunction
+func ReturnError() (string, error) {
+	return "", errors.New("oh no!")
+}
+
