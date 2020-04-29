@@ -26,6 +26,7 @@ RCT_EXPORT_METHOD(getStruct:(RCTResponseSenderBlock)success error:(RCTResponseSe
   
   success(@[resp]);
 }
+
 RCT_EXPORT_METHOD(getString:(RCTResponseSenderBlock)success error:(RCTResponseSenderBlock)error){
   NSError *err = nil;
   NSString *resp = NymbleReturnWrappedValue(&err);
@@ -37,6 +38,7 @@ RCT_EXPORT_METHOD(getString:(RCTResponseSenderBlock)success error:(RCTResponseSe
   
   success(@[resp]);
 }
+
 RCT_EXPORT_METHOD(asyncHello:(RCTResponseSenderBlock)success){
   success(@[NymbleAsync(self)]);
 }
