@@ -3,4 +3,5 @@ export enum AppRoute {
     CONNECT = 'Connect',
     CONNECTIONS = 'Connections',
     CREDENTIALS = 'Credentials',
+    SETTINGS = 'Settings',
 }
