@@ -13,7 +13,7 @@
 
 @synthesize bridge = _bridge;
 
-RCT_EXPORT_MODULE();
+RCT_EXPORT_MODULE();  
 
 RCT_EXPORT_METHOD(getStruct:(RCTResponseSenderBlock)success error:(RCTResponseSenderBlock)error){
   NSError *err = nil;

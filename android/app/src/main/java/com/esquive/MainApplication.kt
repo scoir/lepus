@@ -1,13 +1,13 @@
 package com.esquive
 
-import android.app.Application
 import android.content.Context
+import androidx.multidex.MultiDexApplication
 import com.esquive.bridge.NymblePackage
 import com.facebook.react.*
 import com.facebook.soloader.SoLoader
 import java.lang.reflect.InvocationTargetException
 
-class MainApplication : Application(), ReactApplication {
+class MainApplication : MultiDexApplication(), ReactApplication {
     private val mReactNativeHost: ReactNativeHost = object : ReactNativeHost(this) {
         override fun getUseDeveloperSupport(): Boolean {
             return BuildConfig.DEBUG
