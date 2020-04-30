@@ -2,6 +2,7 @@ import * as React from 'react';
 import {Button, Text, View} from 'react-native';
 import {createStackNavigator} from '@react-navigation/stack';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+import {AppRoute} from "./app-routes";
 
 function ConnectionsScreen({navigation}) {
     return (
@@ -75,10 +76,18 @@ const ConnectScreen = () => (
 
 const Tab = createBottomTabNavigator();
 
+const HomeBottomNavigator = (): React.ReactElement => (
+    <Tab.Navigator>
+        <Tab.Screen name={AppRoute.CONNECTIONS} component={ConnectionsStackScreen}/>
+        <Tab.Screen name={AppRoute.CONNECT} component={ConnectScreen}/>
+        <Tab.Screen name={AppRoute.CREDENTIALS} component={CredentialsStackScreen}/>
+    </Tab.Navigator>
+);
+
 export const HomeNavigator = (): React.ReactElement => (
     <Tab.Navigator>
-        <Tab.Screen name="Connections" component={ConnectionsStackScreen}/>
-        <Tab.Screen name="Connect" component={ConnectScreen}/>
-        <Tab.Screen name="Credentials" component={CredentialsStackScreen}/>
+        <Tab.Screen name={AppRoute.CONNECTIONS} component={ConnectionsStackScreen}/>
+        <Tab.Screen name={AppRoute.CONNECT} component={ConnectScreen}/>
+        <Tab.Screen name={AppRoute.CREDENTIALS} component={CredentialsStackScreen}/>
     </Tab.Navigator>
 );
