@@ -20,3 +20,15 @@ export const HomeIcon = (style): IconElement => (
 export const SearchIcon = (style): IconElement => (
     <Icon {...style} name='search-outline'/>
 );
+
+export const ConnectIcon = (style): IconElement => (
+    <Icon {...style} name='link-outline'/>
+);
+
+export const ConnectionsIcon = (style): IconElement => (
+    <Icon {...style} name='list-outline'/>
+);
+
+export const CredentialsIcon = (style): IconElement => (
+    <Icon {...style} name='briefcase-outline'/>
+);

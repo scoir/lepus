@@ -16,7 +16,7 @@ export const ConnectionsDetailsScreen = (props: ConnectionsDetailsScreenProps): 
     return (
         <React.Fragment>
             <Toolbar
-                appearance='control'
+                title={connection.name}
                 onBackPress={props.navigation.goBack}
             />
             <Layout style={styles.container}>

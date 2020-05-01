@@ -16,7 +16,7 @@ export const CredentialsDetailsScreen = (props: CredentialsDetailsScreenProps): 
     return (
         <React.Fragment>
             <Toolbar
-                appearance='control'
+                title={credential.name}
                 onBackPress={props.navigation.goBack}
             />
             <Layout style={styles.container}>

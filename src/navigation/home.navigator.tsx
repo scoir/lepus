@@ -1,13 +1,14 @@
 import * as React from 'react';
 import {CompositeNavigationProp, RouteProp} from '@react-navigation/core';
-import {BottomTabNavigationProp, createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+import {BottomTabBarProps, BottomTabNavigationProp, createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {AppRoute} from "./app-routes";
 import {createDrawerNavigator, DrawerContentComponentProps, DrawerNavigationProp,} from '@react-navigation/drawer';
 import {HomeDrawer, SettingsScreen} from '../scenes/home';
-import {HomeIcon, InfoIcon,} from '../assets/icons';
+import {ConnectIcon, ConnectionsIcon, CredentialsIcon, HomeIcon, InfoIcon,} from '../assets/icons';
 import {ConnectNavigator} from "./connect.navigator";
 import {ConnectionsNavigator} from "./connections.navigator";
 import {CredentialsNavigator} from "./credentials.navigator";
+import {HomeTabBar} from "../scenes/home/home-tab-bar.component";
 
 type HomeDrawerNavigatorParams = {
     [AppRoute.HOME]: undefined;
@@ -32,15 +33,32 @@ export interface SettingsScreenProps {
     route: RouteProp<HomeDrawerNavigatorParams, AppRoute.SETTINGS>;
 }
 
+export type BottomHomeScreenProps = BottomTabBarProps & {
+    navigation: ConnectTabNavigationProp;
+};
+
 const Drawer = createDrawerNavigator<HomeDrawerNavigatorParams>();
-const Tab = createBottomTabNavigator();
+const BottomTab = createBottomTabNavigator<HomeBottomTabsNavigatorParams>();
 
 const HomeBottomNavigator = (): React.ReactElement => (
-    <Tab.Navigator>
-        <Tab.Screen name={AppRoute.CONNECTIONS} component={ConnectionsNavigator}/>
-        <Tab.Screen name={AppRoute.CONNECT} component={ConnectNavigator}/>
-        <Tab.Screen name={AppRoute.CREDENTIALS} component={CredentialsNavigator}/>
-    </Tab.Navigator>
+    // @ts-ignore: `tabBar` also contains a DrawerNavigationProp
+    <BottomTab.Navigator tabBar={HomeTabBar}>
+        <BottomTab.Screen
+            name={AppRoute.CONNECTIONS}
+            component={ConnectionsNavigator}
+            options={{ title: 'Connections', tabBarIcon: ConnectionsIcon }}
+        />
+        <BottomTab.Screen
+            name={AppRoute.CONNECT}
+            component={ConnectNavigator}
+            options={{ title: 'Connect', tabBarIcon: ConnectIcon }}
+        />
+        <BottomTab.Screen
+            name={AppRoute.CREDENTIALS}
+            component={CredentialsNavigator}
+            options={{ title: 'Credentials', tabBarIcon: CredentialsIcon }}
+        />
+    </BottomTab.Navigator>
 );
 
 export const HomeNavigator = (): React.ReactElement => (
