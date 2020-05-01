@@ -1,5 +1,5 @@
 import React from 'react';
-import { ImageProps } from 'react-native';
+import {ImageProps} from 'react-native';
 import {
     StyleType,
     TopNavigation,
@@ -7,7 +7,7 @@ import {
     TopNavigationActionElement,
     TopNavigationProps,
 } from '@ui-kitten/components';
-import { BackIcon, } from '../assets/icons';
+import {BackIcon,} from '../assets/icons';
 
 export interface ToolbarProps extends TopNavigationProps {
     backIcon?: (style: StyleType) => React.ReactElement<ImageProps>;
@@ -17,7 +17,7 @@ export interface ToolbarProps extends TopNavigationProps {
 
 export const Toolbar = (props: ToolbarProps): TopNavigationActionElement => {
 
-    const { backIcon, menuIcon, onBackPress, ...topNavigationProps } = props;
+    const {backIcon, menuIcon, onBackPress, ...topNavigationProps} = props;
 
     const renderBackAction = (): TopNavigationActionElement => (
         <TopNavigationAction

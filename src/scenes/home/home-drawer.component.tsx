@@ -1,7 +1,7 @@
 import React from 'react';
-import { ImageBackground, ImageBackgroundProps, StyleSheet } from 'react-native';
-import { Drawer, DrawerElement, MenuItemType } from '@ui-kitten/components';
-import { DrawerHomeScreenProps } from '../../navigation/home.navigator';
+import {ImageBackground, ImageBackgroundProps, StyleSheet} from 'react-native';
+import {Drawer, DrawerElement, MenuItemType} from '@ui-kitten/components';
+import {DrawerHomeScreenProps} from '../../navigation/home.navigator';
 
 const DrawerHeader = (): React.ReactElement<ImageBackgroundProps> => (
     <ImageBackground
@@ -19,7 +19,7 @@ export const HomeDrawer = (props: DrawerHomeScreenProps): DrawerElement => {
     };
 
     const createNavigationItemForRoute = (route): MenuItemType => {
-        const { options } = props.descriptors[route.key];
+        const {options} = props.descriptors[route.key];
         return {
             routeName: route.name,
             // @ts-ignore: all Drawer Screens strictly have string title

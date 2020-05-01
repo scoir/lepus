@@ -12,4 +12,7 @@
 
 ### build things
 
-    yarn global add react-native-cli
+    yarn global add react-native-cli\
+    
+    
+Photo by Fabrice Villard on Unsplash

@@ -83,7 +83,7 @@
 //         <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
 //             <Text>Connections screen</Text>
 //             <Button
-//                 title="Go to Connection Details"
+//                 title="Go to ConnectionModel Details"
 //                 onPress={() => navigation.navigate('Details')}
 //             />
 //         </View>
@@ -93,7 +93,7 @@
 // function ConnectionDetail() {
 //     return (
 //         <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-//             <Text>Connection Details!</Text>
+//             <Text>ConnectionModel Details!</Text>
 //         </View>
 //     );
 // }

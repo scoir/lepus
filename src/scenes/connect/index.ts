@@ -1,1 +1,1 @@
-export { ConnectScreen } from './connect.component';
+export {ConnectScreen} from './connect.component';

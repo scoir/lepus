@@ -1,9 +1,9 @@
 import React from 'react';
-import { CompositeNavigationProp, RouteProp } from '@react-navigation/core';
-import { createStackNavigator, StackNavigationProp } from '@react-navigation/stack';
-import { ConnectTabNavigationProp } from './home.navigator';
-import { AppRoute } from './app-routes';
-import { ConnectScreen } from '../scenes/connect';
+import {CompositeNavigationProp, RouteProp} from '@react-navigation/core';
+import {createStackNavigator, StackNavigationProp} from '@react-navigation/stack';
+import {ConnectTabNavigationProp} from './home.navigator';
+import {AppRoute} from './app-routes';
+import {ConnectScreen} from '../scenes/connect';
 
 type ConnectNavigatorParams = {
     [AppRoute.CONNECT]: undefined;
