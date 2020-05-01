@@ -27,6 +27,10 @@ const takePicture = async function (camera) {
     console.log(data.uri);
 };
 
+const barcodeRecognized = ({ barcodes }) => {
+    barcodes.forEach(barcode => console.warn(barcode.data))
+};
+
 export const ConnectScreen = (props: ConnectScreenProps): SafeAreaLayoutElement => (
 
     <SafeAreaLayout
@@ -56,13 +60,14 @@ export const ConnectScreen = (props: ConnectScreenProps): SafeAreaLayoutElement 
                     buttonPositive: 'Ok',
                     buttonNegative: 'Cancel',
                 }}
+                onGoogleVisionBarcodesDetected={barcodeRecognized}
             >
                 {({camera, status, recordAudioPermissionStatus}) => {
                     if (status !== 'READY') return <PendingView/>;
                     return (
                         <View style={{flex: 0, flexDirection: 'row', justifyContent: 'center'}}>
                             <TouchableOpacity onPress={() => takePicture(camera)} style={styles.capture}>
-                                <Text style={{fontSize: 14}}> SNAP </Text>
+                                <Text style={{fontSize: 12}}> Connect </Text>
                             </TouchableOpacity>
                         </View>
                     );
