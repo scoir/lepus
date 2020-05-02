@@ -77,6 +77,8 @@ target 'esquive' do
   pod 'glog', :podspec => '../node_modules/react-native/third-party-podspecs/glog.podspec'
   pod 'Folly', :podspec => '../node_modules/react-native/third-party-podspecs/Folly.podspec'
 
+  pod 'RNPermissions', :path => '../node_modules/react-native-permissions'
+
   target 'esquiveTests' do
     inherit! :complete
     # Pods for testing

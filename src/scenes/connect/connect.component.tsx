@@ -1,11 +1,11 @@
 import React from 'react';
-import {StyleSheet, TouchableOpacity, View} from 'react-native';
+import {Alert, StyleSheet, TouchableOpacity, View} from 'react-native';
 import {Divider, Layout, Text} from '@ui-kitten/components';
 import {ConnectScreenProps} from '../../navigation/connect.navigator';
 import {Toolbar} from '../../components/toolbar.component';
 import {SafeAreaLayout, SafeAreaLayoutElement, SaveAreaInset,} from '../../components/safe-area-layout.component';
 import {MenuIcon} from '../../assets/icons';
-import {RNCamera} from 'react-native-camera';
+import QRCodeScanner from 'react-native-qrcode-scanner';
 
 const PendingView = () => (
     <View
@@ -27,8 +27,23 @@ const takePicture = async function (camera) {
     console.log(data.uri);
 };
 
-const barcodeRecognized = ({ barcodes }) => {
-    barcodes.forEach(barcode => console.warn(barcode.data))
+const scannerRef: React.RefObject<QRCodeScanner> = React.createRef();
+const reset = () => {
+    if (scannerRef !== null && scannerRef.current instanceof QRCodeScanner) {
+        scannerRef.current.reactivate()
+    }
+}
+
+const barcodeRecognized = (barcode) => {
+    Alert.alert(
+        "Connecting",
+        barcode.data,
+        [
+            {text: "Cancel", onPress: reset, style: "cancel"},
+            {text: "OK", onPress: reset}
+        ],
+    );
+    console.warn(barcode.data)
 };
 
 export const ConnectScreen = (props: ConnectScreenProps): SafeAreaLayoutElement => (
@@ -43,26 +58,11 @@ export const ConnectScreen = (props: ConnectScreenProps): SafeAreaLayoutElement 
         />
         <Divider/>
         <Layout style={styles.container}>
-            <RNCamera
-                style={styles.preview}
-                type={RNCamera.Constants.Type.back}
-                flashMode={RNCamera.Constants.FlashMode.on}
-                captureAudio={false}
-                androidCameraPermissionOptions={{
-                    title: 'Permission to use camera',
-                    message: 'We need your permission to use your camera',
-                    buttonPositive: 'Ok',
-                    buttonNegative: 'Cancel',
-                }}
-                androidRecordAudioPermissionOptions={{
-                    title: 'Permission to use audio recording',
-                    message: 'We need your permission to use your audio',
-                    buttonPositive: 'Ok',
-                    buttonNegative: 'Cancel',
-                }}
-                onGoogleVisionBarcodesDetected={barcodeRecognized}
-            >
-                {({camera, status, recordAudioPermissionStatus}) => {
+            <QRCodeScanner
+                showMarker={true}
+                fadeIn={false}
+                onRead={barcodeRecognized}>
+                {({camera, status}) => {
                     if (status !== 'READY') return <PendingView/>;
                     return (
                         <View style={{flex: 0, flexDirection: 'row', justifyContent: 'center'}}>
@@ -72,7 +72,7 @@ export const ConnectScreen = (props: ConnectScreenProps): SafeAreaLayoutElement 
                         </View>
                     );
                 }}
-            </RNCamera>
+            </QRCodeScanner>
         </Layout>
     </SafeAreaLayout>
 );
