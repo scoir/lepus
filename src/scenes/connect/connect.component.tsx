@@ -1,5 +1,5 @@
 import React from 'react';
-import {Alert, StyleSheet, TouchableOpacity, View} from 'react-native';
+import {Alert, StyleSheet, View} from 'react-native';
 import {Divider, Layout, Text} from '@ui-kitten/components';
 import {ConnectScreenProps} from '../../navigation/connect.navigator';
 import {Toolbar} from '../../components/toolbar.component';
@@ -20,17 +20,10 @@ const PendingView = () => (
     </View>
 );
 
-const takePicture = async function (camera) {
-    const options = {quality: 0.5, base64: true};
-    const data = await camera.takePictureAsync(options);
-    //  eslint-disable-next-line
-    console.log(data.uri);
-};
-
 const scannerRef: React.RefObject<QRCodeScanner> = React.createRef();
 const reset = () => {
-    if (scannerRef !== null && scannerRef.current instanceof QRCodeScanner) {
-        scannerRef.current.reactivate()
+    if (scannerRef.current instanceof QRCodeScanner) {
+        scannerRef.current.reactivate();
     }
 }
 
@@ -43,7 +36,6 @@ const barcodeRecognized = (barcode) => {
             {text: "OK", onPress: reset}
         ],
     );
-    console.warn(barcode.data)
 };
 
 export const ConnectScreen = (props: ConnectScreenProps): SafeAreaLayoutElement => (
@@ -59,18 +51,13 @@ export const ConnectScreen = (props: ConnectScreenProps): SafeAreaLayoutElement 
         <Divider/>
         <Layout style={styles.container}>
             <QRCodeScanner
+                ref={scannerRef}
+                reactivateTimeout={2}
                 showMarker={true}
                 fadeIn={false}
                 onRead={barcodeRecognized}>
-                {({camera, status}) => {
+                {({_, status}) => {
                     if (status !== 'READY') return <PendingView/>;
-                    return (
-                        <View style={{flex: 0, flexDirection: 'row', justifyContent: 'center'}}>
-                            <TouchableOpacity onPress={() => takePicture(camera)} style={styles.capture}>
-                                <Text style={{fontSize: 12}}> Connect </Text>
-                            </TouchableOpacity>
-                        </View>
-                    );
                 }}
             </QRCodeScanner>
         </Layout>
