@@ -17,14 +17,15 @@ WritableArray
 WritableMap
  */
 class NymbleModule internal constructor(reactContext: ReactApplicationContext?) : ReactContextBaseJavaModule(reactContext!!) {
+
     @ReactMethod
-    fun getStruct(success: Callback, error: Callback) {
+    fun handleInvitation(invitation: String, success: Callback, error: Callback) {
         val result: String
         result = try {
-            Nymble.returnStruct()
+            Nymble.handleInvite(invitation)
         } catch (e: Exception) {
             error.invoke("It's all gone Pete Tong")
-            e.printStackTrace()
+            Log.e("nymble", e.toString())
             return
         }
 
@@ -32,17 +33,16 @@ class NymbleModule internal constructor(reactContext: ReactApplicationContext?) 
     }
 
     @ReactMethod
-    fun getString(success: Callback, error: Callback) {
-        val result: String
-        result = try {
-            Nymble.returnWrappedValue()
+    fun testDebug(success: Callback, error: Callback) {
+        try {
+            Nymble.testDebugServer()
         } catch (e: Exception) {
-            error.invoke("It's all gone Pete Tong")
-            e.printStackTrace()
+            error.invoke("failed invocation")
+            Log.e("testDebug", e.toString())
             return
         }
 
-        success.invoke(result)
+        success.invoke("success")
     }
 
     @ReactMethod

@@ -13,23 +13,11 @@
 
 @synthesize bridge = _bridge;
 
-RCT_EXPORT_MODULE();  
+RCT_EXPORT_MODULE();
 
-RCT_EXPORT_METHOD(getStruct:(RCTResponseSenderBlock)success error:(RCTResponseSenderBlock)error){
+RCT_EXPORT_METHOD(handleInvitation:(NSString*)invitation success:(RCTResponseSenderBlock)success error:(RCTResponseSenderBlock)error){
   NSError *err = nil;
-  NSString *resp = NymbleReturnStruct(&err);
-  
-  if (err != nil) {
-    error(@[[err description]]);
-    return;
-  }
-  
-  success(@[resp]);
-}
-
-RCT_EXPORT_METHOD(getString:(RCTResponseSenderBlock)success error:(RCTResponseSenderBlock)error){
-  NSError *err = nil;
-  NSString *resp = NymbleReturnWrappedValue(&err);
+  NSString *resp = NymbleHandleInvite(invitation, &err);
   
   if (err != nil) {
     error(@[[err description]]);

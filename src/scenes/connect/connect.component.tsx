@@ -1,5 +1,5 @@
 import React from 'react';
-import {Alert, StyleSheet, View} from 'react-native';
+import {NativeModules, StyleSheet, View} from 'react-native';
 import {Divider, Layout, Text} from '@ui-kitten/components';
 import {ConnectScreenProps} from '../../navigation/connect.navigator';
 import {Toolbar} from '../../components/toolbar.component';
@@ -28,15 +28,33 @@ const reset = () => {
 }
 
 const barcodeRecognized = (barcode) => {
-    Alert.alert(
-        "Connecting",
-        barcode.data,
-        [
-            {text: "Cancel", onPress: reset, style: "cancel"},
-            {text: "OK", onPress: reset}
-        ],
-    );
+    // Alert.alert(
+    //     "Connecting",
+    //     barcode.data,
+    //     [
+    //         {text: "Cancel", onPress: reset, style: "cancel"},
+    //         {text: "OK", onPress: reset}
+    //     ],
+    // );
+
+    NativeModules.Nymble.handleInvitation(barcode.data, (data) => {
+        console.log(data);
+        console.log(unpack(data));
+    }, (err) => {
+        console.log("something went wrong handling the invitation", err)
+    });
+
+    reset();
 };
+
+const unpack = (data) => {
+    let d = JSON.parse(data);
+
+    if ('value' in d) {
+        return d.value
+    }
+    return d;
+}
 
 export const ConnectScreen = (props: ConnectScreenProps): SafeAreaLayoutElement => (
 
@@ -44,7 +62,6 @@ export const ConnectScreen = (props: ConnectScreenProps): SafeAreaLayoutElement 
         style={styles.safeArea}
         insets={SaveAreaInset.TOP}>
         <Toolbar
-            title='poop'
             backIcon={MenuIcon}
             onBackPress={props.navigation.toggleDrawer}
         />
@@ -72,19 +89,5 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-    },
-    preview: {
-        flex: 1,
-        justifyContent: 'flex-end',
-        alignItems: 'center',
-    },
-    capture: {
-        flex: 0,
-        backgroundColor: '#fff',
-        borderRadius: 5,
-        padding: 15,
-        paddingHorizontal: 20,
-        alignSelf: 'center',
-        margin: 20,
     },
 });

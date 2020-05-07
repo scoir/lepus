@@ -11,35 +11,11 @@
 #include "Universe.objc.h"
 
 
-@class NymbleAnotherStruct;
-@class NymbleFoo;
 @protocol NymbleEventBus;
 @class NymbleEventBus;
 
 @protocol NymbleEventBus <NSObject>
 - (void)sendEvent:(NSString* _Nullable)channel message:(NSString* _Nullable)message;
-@end
-
-@interface NymbleAnotherStruct : NSObject <goSeqRefInterface> {
-}
-@property(strong, readonly) _Nonnull id _ref;
-
-- (nonnull instancetype)initWithRef:(_Nonnull id)ref;
-- (nonnull instancetype)init;
-@property (nonatomic) NSString* _Nonnull poop;
-@end
-
-@interface NymbleFoo : NSObject <goSeqRefInterface> {
-}
-@property(strong, readonly) _Nonnull id _ref;
-
-- (nonnull instancetype)initWithRef:(_Nonnull id)ref;
-- (nonnull instancetype)init;
-@property (nonatomic) long bar;
-@property (nonatomic) NSString* _Nonnull baz;
-// skipped field Foo.Barry with unsupported type: []int
-
-@property (nonatomic) NymbleAnotherStruct* _Nullable billy;
 @end
 
 FOUNDATION_EXPORT NSString* _Nonnull const NymbleDefaultChannel;
@@ -54,21 +30,11 @@ noinspection GoUnusedExportedFunction
  */
 FOUNDATION_EXPORT NSString* _Nonnull NymbleAsync(id<NymbleEventBus> _Nullable bus);
 
-FOUNDATION_EXPORT NSString* _Nonnull NymblePoop(void);
-
 /**
- * ReturnStruct we stringify due to the restrictions in the react bridge, we'll unmarshall in JS
-
+ * HandleInvite processes the data provided by a scanned QR code in the mobile applications
 noinspection GoUnusedExportedFunction
  */
-FOUNDATION_EXPORT NSString* _Nonnull NymbleReturnStruct(NSError* _Nullable* _Nullable error);
-
-/**
- * ReturnWrappedValue
-
-noinspection GoUnusedExportedFunctions
- */
-FOUNDATION_EXPORT NSString* _Nonnull NymbleReturnWrappedValue(NSError* _Nullable* _Nullable error);
+FOUNDATION_EXPORT NSString* _Nonnull NymbleHandleInvite(NSString* _Nullable invite, NSError* _Nullable* _Nullable error);
 
 @class NymbleEventBus;
 

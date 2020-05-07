@@ -16,11 +16,15 @@ tools:
 android-aar: clean
 	@./scripts/android.sh
 
-ios-framework:
-	cd go/nymble && gomobile clean && gomobile bind -o $(ESQUIVE_ROOT)/ios/esquive/nymble.framework -target=ios
+ios-framework: clean
+	@./scripts/ios.sh
 
 run-ios:
 	npx react-native run-ios
 
 run-android:
 	npx react-native run-android
+
+debug:
+	@echo "🐛  Running debug server"
+	@cd go/cmd/debug && go run debug.go
