@@ -1,0 +1,8 @@
+framework module "Nymble" {
+	header "ref.h"
+    header "Nymble.objc.h"
+    header "Universe.objc.h"
+    header "Nymble.h"
+
+    export *
+}
