@@ -2,7 +2,7 @@ module pkg
 
 go 1.14
 
-replace github.com/hyperledger/aries-framework-go => github.com/scoir/aries-framework-go v0.1.8
+replace github.com/hyperledger/aries-framework-go => github.com/scoir/aries-framework-go v0.1.10
 
 require (
 	github.com/hyperledger/aries-framework-go v0.1.2
