@@ -61,7 +61,7 @@ export const CredentialsScreen = (props: CredentialsScreenProps): ListElement =>
     return (
         <Layout style={styles.container}>
             <Toolbar
-                title='poop'
+                title='credentials'
                 backIcon={MenuIcon}
                 onBackPress={props.navigation.toggleDrawer}
             />

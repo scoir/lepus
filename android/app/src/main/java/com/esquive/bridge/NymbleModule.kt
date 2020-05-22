@@ -18,29 +18,82 @@ WritableMap
  */
 class NymbleModule internal constructor(reactContext: ReactApplicationContext?) : ReactContextBaseJavaModule(reactContext!!) {
 
+    private val tag = "Nymble"
+
+    @ReactMethod
+    fun registerWithAgency(success: Callback, error: Callback) {
+        try {
+            Nymble.registerWithAgency()
+        } catch (e: Exception) {
+            error.invoke("failed to register with agency")
+            Log.e(tag, e.toString())
+            return
+        }
+        success.invoke("ok")
+    }
+
+    @ReactMethod
+    fun hasRouteConnection(success: Callback, error: Callback) {
+        val result: Boolean
+        result = try {
+            Nymble.hasRouteConnection()
+        } catch (e: Exception) {
+            error.invoke("failed to run router check")
+            Log.e(tag, e.toString())
+            return
+        }
+        Log.i(tag, "hasRouteConnection $result")
+        success.invoke(result)
+    }
+
     @ReactMethod
     fun handleInvitation(invitation: String, success: Callback, error: Callback) {
         val result: String
         result = try {
             Nymble.handleInvite(invitation)
         } catch (e: Exception) {
-            error.invoke("It's all gone Pete Tong")
-            Log.e("nymble", e.toString())
+            error.invoke("failed to handle invitation")
+            Log.e(tag, e.toString())
             return
         }
+        Log.i(tag, "handleInvitation $result")
+        success.invoke(result)
+    }
 
+    @ReactMethod
+    fun listConnections(success: Callback, error: Callback) {
+        Log.i(tag, "list connections")
+        val result: String
+        result = try {
+            Nymble.listConnections()
+        } catch (e: Exception) {
+            error.invoke("failed to list connections")
+            Log.e(tag, e.toString())
+            return
+        }
+        Log.i(tag, "listConnections $result")
+        success.invoke(result)
+    }
+
+    @ReactMethod
+    fun getConnection(connectionID: String, success: Callback, error: Callback) {
+        Log.i(tag, "get connection")
+        val result: String
+        result = try {
+            Nymble.getConnection(connectionID)
+        } catch (e: Exception) {
+            error.invoke("failed to get connection")
+            Log.e(tag, e.toString())
+            return
+        }
+        Log.i(tag, "getConnection $result")
         success.invoke(result)
     }
 
     @ReactMethod
     fun testDebug(success: Callback, error: Callback) {
-        try {
-            Nymble.testDebugServer()
-        } catch (e: Exception) {
-            error.invoke("failed invocation")
-            Log.e("testDebug", e.toString())
-            return
-        }
+        Log.i(tag, "debugging debug")
+        Nymble.testDebugServer()
 
         success.invoke("success")
     }

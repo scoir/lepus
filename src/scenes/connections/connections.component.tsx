@@ -1,5 +1,5 @@
-import React from 'react';
-import {ListRenderItemInfo} from 'react-native';
+import React, {useEffect} from 'react';
+import {ListRenderItemInfo, NativeModules} from 'react-native';
 import {ConnectionsScreenProps} from "../../navigation/connections.navigator";
 import {
     Input,
@@ -24,6 +24,20 @@ const mockConnections: Connection[] = [
 ];
 
 export const ConnectionsScreen = (props: ConnectionsScreenProps): ListElement => {
+    useEffect(() => {
+        NativeModules.Nymble.hasRouteConnection((data) => {
+            console.log(data);
+            if (data === false) {
+                NativeModules.Nymble.registerWithAgency((data) => {
+                    console.log(data);
+                }, (err) => {
+                    console.log("registerWithAgency error", err)
+                });
+            }
+        }, (err) => {
+            console.log("hasRouteConnection error", err)
+        });
+    }, []);
 
     const [connections, setConnections] = React.useState<Connection[]>(mockConnections);
     const [query, setQuery] = React.useState<string>('');
@@ -61,7 +75,7 @@ export const ConnectionsScreen = (props: ConnectionsScreenProps): ListElement =>
     return (
         <Layout style={styles.container}>
             <Toolbar
-                title='poop'
+                title='connections'
                 backIcon={MenuIcon}
                 onBackPress={props.navigation.toggleDrawer}
             />

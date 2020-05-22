@@ -39,12 +39,11 @@ const barcodeRecognized = (barcode) => {
 
     NativeModules.Nymble.handleInvitation(barcode.data, (data) => {
         console.log(data);
-        console.log(unpack(data));
+        // reset();
     }, (err) => {
         console.log("something went wrong handling the invitation", err)
+        // reset();
     });
-
-    reset();
 };
 
 const unpack = (data) => {
