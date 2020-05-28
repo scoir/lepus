@@ -13,16 +13,19 @@ tools:
 	go get golang.org/x/mobile/cmd/gomobile
 	gomobile init
 
-android-aar: clean
+local:
+	@./scripts/create-local-config.sh
+
+android-aar: clean local
 	@./scripts/android.sh
 
-ios-framework: clean
+ios-framework: clean local
 	@./scripts/ios.sh
 
-run-ios:
-	npx react-native run-ios
+run-ios: ios-framework
+	@npx react-native run-ios
 
-run-android:
+run-android: android-aar
 	npx react-native run-android
 
 debug:

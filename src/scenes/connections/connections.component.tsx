@@ -25,9 +25,10 @@ const mockConnections: Connection[] = [
 
 export const ConnectionsScreen = (props: ConnectionsScreenProps): ListElement => {
     useEffect(() => {
-        NativeModules.Nymble.hasRouteConnection((data) => {
+        NativeModules.Nymble.hasRouterConnection((data) => {
             console.log(data);
             if (data === false) {
+                console.log("registering with agency")
                 NativeModules.Nymble.registerWithAgency((data) => {
                     console.log(data);
                 }, (err) => {

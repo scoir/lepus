@@ -1,7 +1,8 @@
 #!/bin/bash
+# https://unix.stackexchange.com/questions/175648/use-config-file-for-my-shell-script
+source ./scripts/config.shlib;
 
 ESQUIVE_ROOT=$(pwd)
-HOST_IP=$(ifconfig | sed -En 's/127.0.0.1//;s/.*inet (addr:)?(([0-9]*\.){3}[0-9]*).*/\2/p')
 
 echo -e "🛠  Building..."
 cd go/nymble && gomobile bind -o "$ESQUIVE_ROOT"/ios/esquive/nymble.framework -target=ios > /dev/null

@@ -33,10 +33,10 @@ class NymbleModule internal constructor(reactContext: ReactApplicationContext?) 
     }
 
     @ReactMethod
-    fun hasRouteConnection(success: Callback, error: Callback) {
+    fun hasRouterConnection(success: Callback, error: Callback) {
         val result: Boolean
         result = try {
-            Nymble.hasRouteConnection()
+            Nymble.hasRouterConnection()
         } catch (e: Exception) {
             error.invoke("failed to run router check")
             Log.e(tag, e.toString())

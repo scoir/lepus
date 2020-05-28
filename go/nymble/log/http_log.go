@@ -6,9 +6,12 @@ import (
 	"encoding/base64"
 	"fmt"
 	"net/http"
+
+	"pkg/nymble/config"
 )
 
 func Println(v ...interface{}) {
-	_, _ = http.Get(fmt.Sprintf("http://192.168.1.234:8910/log/%s",
+	_, _ = http.Get(fmt.Sprintf("http://%s:%s/log/%s", config.DebugIP, config.DebugPort,
 		base64.StdEncoding.EncodeToString([]byte(fmt.Sprintln(v...)))))
+
 }

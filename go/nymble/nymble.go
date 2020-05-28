@@ -3,22 +3,25 @@ package nymble
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"time"
 
 	"github.com/hyperledger/aries-framework-go/pkg/client/didexchange"
 	"github.com/hyperledger/aries-framework-go/pkg/client/route"
 	"github.com/hyperledger/aries-framework-go/pkg/didcomm/common/service"
-	"github.com/hyperledger/aries-framework-go/pkg/didcomm/transport/ws"
 	didcommroute "github.com/hyperledger/aries-framework-go/pkg/didcomm/protocol/route"
+	"github.com/hyperledger/aries-framework-go/pkg/didcomm/transport/ws"
 	"github.com/hyperledger/aries-framework-go/pkg/framework/aries"
 	ariescontext "github.com/hyperledger/aries-framework-go/pkg/framework/context"
 	"github.com/hyperledger/aries-framework-go/pkg/storage/mem"
+	"github.com/hyperledger/aries-framework-go/pkg/store/verifiable"
 	"github.com/pkg/errors"
 	"github.com/scoir/allez/pkg/routing_agent"
 	basicmessageSvc "github.com/scoir/nymble/pkg/didcomm/protocol/basicmessage"
 	messagepickupSvc "github.com/scoir/nymble/pkg/didcomm/protocol/messagepickup"
 	"google.golang.org/grpc"
 
+	"pkg/nymble/config"
 	"pkg/nymble/log"
 )
 
@@ -52,22 +55,28 @@ type wrapper struct {
 // noinspection GoUnusedExportedFunction
 func TestDebugServer() {
 	log.Println("testy badger")
+
+	log.Println("RouterAddress", config.RouterAddress)
+	log.Println("RouterPort", config.RouterPort)
+
+	log.Println("DebugIP", config.DebugIP)
+	log.Println("DebugPort", config.DebugPort)
 }
 
-//HasRouteConnection checks if a router connection has been previously establish
+//HasRouterConnection checks if a router connection has been previously establish
 //
 //noinspection GoUnusedExportedFunction
-func HasRouteConnection() (bool, error) {
-	log.Println("HasRouteConnection")
+func HasRouterConnection() (bool, error) {
 	ctx, err := getContext()
 	if err != nil {
-		log.Println("get context", err)
+		log.Println(" HasRouterConnection get context", err)
 		return false, err
 	}
 
 	myRouter, err := route.New(ctx)
 	if err != nil {
-		return false, errors.Wrap(err, "failed to create route client for router")
+		log.Println("HasRouterConnection route new", err)
+		return false, err
 	}
 
 	routerConn, err := myRouter.GetConnection()
@@ -76,9 +85,11 @@ func HasRouteConnection() (bool, error) {
 	}
 
 	if err != nil {
-		log.Println(err)
-		return false, errors.Wrap(err, "failed to register with the my router")
+		log.Println("HasRouterConnection", err)
+		return false, err
 	}
+
+	log.Println("HasRouterConnection", len(routerConn) > 0)
 
 	return len(routerConn) > 0, nil
 }
@@ -87,44 +98,51 @@ func HasRouteConnection() (bool, error) {
 //
 //noinspection GoUnusedExportedFunction
 func RegisterWithAgency() error {
-	cc, err := grpc.Dial("minikube.scoir.com:31068", grpc.WithInsecure())
+	cc, err := grpc.Dial(fmt.Sprintf("%s:%s", config.RouterAddress, config.RouterPort), grpc.WithInsecure())
 	if err != nil {
-		log.Println("failed to dial grpc", err)
+		log.Println("RegisterWithAgency grpc dial", err)
 		return err
 	}
-	routerCli := routing_agent.NewRoutingEdgeAgentClient(cc)
+	routingClient := routing_agent.NewRoutingEdgeAgentClient(cc)
 
 	log.Println("connecting to agency")
-	resp, err := routerCli.GetEdgeInvitation(context.Background(), &routing_agent.InvitationRequest{})
+	resp, err := routingClient.GetEdgeInvitation(context.Background(), &routing_agent.InvitationRequest{})
 	if err != nil {
-		return errors.Wrap(err, "failed to retrieve invitation from router")
+		log.Println("RegisterWithAgency GetEdgeInvitation", err)
+		return err
 	}
 
 	invite := &didexchange.Invitation{}
 	err = json.Unmarshal([]byte(resp.Invitation), invite)
 	if err != nil {
-		return errors.Wrap(err, "failed to unmarshal invitation from router")
+		log.Println(invite)
+		log.Println("RegisterWithAgency json unmarshal invitation", err)
+		return err
 	}
 
 	ctx, err := getContext()
 	if err != nil {
+		log.Println("RegisterWithAgency getContext", err)
 		return err
 	}
 
 	client, err := didexchange.New(ctx)
 	if err != nil {
-		return errors.Wrap(err, "failed to create client for router")
+		log.Println("RegisterWithAgency didexchange new", err)
+		return err
 	}
 
+	//auto accept
 	actionCh := make(chan service.DIDCommAction)
 	err = client.RegisterActionEvent(actionCh)
 	if err != nil {
-		return errors.Wrap(err, "unable to register with didexchange")
+		log.Println("RegisterWithAgency RegisterActionEvent", err)
+		return err
 	}
 
 	go service.AutoExecuteActionEvent(actionCh)
 
-	log.Println("received the invitation")
+	log.Println("RegisterWithAgency received the invitation")
 	log.Println(resp.Invitation)
 
 	connectionID, err := client.HandleInvitation(invite)
@@ -150,13 +168,17 @@ func RegisterWithAgency() error {
 
 	myRouter, err := route.New(ctx)
 	if err != nil {
-		return errors.Wrap(err, "failed to create route client for router: %v\n")
+		log.Println("RegisterWithAgency route new", err)
+		return err
 	}
 
 	err = myRouter.Register(connectionID)
 	if err != nil {
-		return errors.Wrap(err, "failed to register with the my router: %v\n")
+		log.Println("RegisterWithAgency router register", connectionID, err)
+		return err
 	}
+
+	log.Println("RegisterWithAgency done")
 
 	return nil
 }
@@ -167,33 +189,34 @@ func RegisterWithAgency() error {
 func HandleInvite(invite string) (string, error) {
 	ctx, err := getContext()
 	if err != nil {
-		log.Println(err)
+		log.Println("HandleInvite getContext", err)
 		return "", err
 	}
 
 	client, err := createClient(ctx)
 	if err != nil {
+		log.Println("HandleInvite createClient", err)
 		return "", err
 	}
 
-	//handling invite
-	log.Println(invite)
+	log.Println("HandleInvite", invite)
 
 	hs := &didexchange.Invitation{}
 	err = json.Unmarshal([]byte(invite), hs)
 	if err != nil {
-		log.Println("parse invitation failed", invite)
-		return "", errors.New("bad json")
+		log.Println("HandleInvite json marshal", err)
+		return "", err
 	}
 
 	connID, err := client.HandleInvitation(hs)
 	if err != nil {
-		log.Println("failed to handle invitation")
-		return "", errors.New("failed to handle invitation")
+		log.Println("HandleInvite fo real", err)
+		return "", err
 	}
 
 	log.Println("HandleInvite connection ID", connID)
 
+	//max timeout
 	t := time.Tick(2 * time.Second)
 	for range t {
 		conn, _ := client.GetConnection(connID)
@@ -202,10 +225,6 @@ func HandleInvite(invite string) (string, error) {
 			break
 		}
 	}
-
-	ListConnections()
-
-	GetConnection(connID)
 
 	return connID, nil
 }
@@ -221,7 +240,8 @@ func ListConnections() (string, error) {
 
 	client, err := createClient(ctx)
 	if err != nil {
-		return "", errors.New("failed to list connections")
+		log.Println("ListConnections createContext", err)
+		return "", err
 	}
 
 	req := &didexchange.QueryConnectionsParams{
@@ -229,7 +249,7 @@ func ListConnections() (string, error) {
 	}
 	conns, err := client.QueryConnections(req)
 	if err != nil {
-		log.Println("QueryConnections failed", err)
+		log.Println("ListConnections QueryConnections", err)
 		return "", err
 	}
 	for _, conn := range conns {
@@ -238,36 +258,13 @@ func ListConnections() (string, error) {
 
 	s, err := json.Marshal(conns)
 	if err != nil {
+		log.Println("ListConnections json marshal", err)
 		return "", err
 	}
 
 	log.Println("ListConnections", string(s))
 
 	return string(s), nil
-
-	//fmt.Println("Credentials in Wallet")
-	//creds := r.store.GetCredentials()
-	//for _, cr := range creds {
-	//	fmt.Println(cr.ID, ":", cr.Name)
-	//	cred, err := r.store.GetCredential(cr.ID)
-	//	if err != nil {
-	//		log.Println("error getting cred", cr.ID)
-	//	}
-	//
-	//	log.Println("\t", cred.Issued)
-	//	log.Println("\t", cred.Issuer.Name)
-	//}    fmt.Println("Credentials in Wallet")
-	//creds := r.store.GetCredentials()
-	//for _, cr := range creds {
-	//	fmt.Println(cr.ID, ":", cr.Name)
-	//	cred, err := r.store.GetCredential(cr.ID)
-	//	if err != nil {
-	//		log.Println("error getting cred", cr.ID)
-	//	}
-	//
-	//	log.Println("\t", cred.Issued)
-	//	log.Println("\t", cred.Issuer.Name)
-	//}
 }
 
 //GetConnection fetches single connection record for given id
@@ -276,22 +273,96 @@ func ListConnections() (string, error) {
 func GetConnection(connectionID string) (string, error) {
 	ctx, err := getContext()
 	if err != nil {
+		log.Println("GetConnection getContext", err)
 		return "", err
 	}
 
 	client, err := createClient(ctx)
 	if err != nil {
-		return "", errors.New("failed to get connection")
+		log.Println("GetConnection createClient", err)
+		return "", err
 	}
 
 	conn, err := client.GetConnection(connectionID)
 
-	s, err := json.Marshal(conn)
+	b, err := json.Marshal(conn)
 	if err != nil {
+		log.Println("GetConnection json marshal", err)
 		return "", err
 	}
 
 	log.Println("GetConnection", conn)
+
+	return string(b), nil
+}
+
+// List Credentials all credentials in wallet
+//
+//noinspection GoUnusedExportedFunction
+func ListCredentials() (string, error) {
+	ctx, err := getContext()
+	if err != nil {
+		log.Println("ListCredentials getContext", err)
+		return "", err
+	}
+
+	vc, err := verifiable.New(ctx)
+	if err != nil {
+		log.Println("ListCredentials verifiable new", err)
+		return "", err
+	}
+
+	creds := vc.GetCredentials()
+	for _, cr := range creds {
+		log.Println(cr.ID, ":", cr.Name)
+		cred, err := vc.GetCredential(cr.ID)
+		if err != nil {
+			log.Println("ListCredentials GetCredential", cr.ID, err)
+			continue
+		}
+
+		log.Println("\t", cred.Issued)
+		log.Println("\t", cred.Issuer.Name)
+	}
+
+	b, err := json.Marshal(creds)
+	if err != nil {
+		log.Println("failed to marshal credentials", err)
+		return "", err
+	}
+
+	return string(b), nil
+}
+
+// GetCredential returns a single credential by id
+//
+//noinspection GoUnusedExportedFunction
+func GetCredential(credentialID string) (string, error) {
+	ctx, err := getContext()
+	if err != nil {
+		log.Println("GetCredential getContext", err)
+		return "", err
+	}
+
+	vc, err := verifiable.New(ctx)
+	if err != nil {
+		log.Println("GetCredential verifiable new", err)
+		return "", err
+	}
+
+	credential, err := vc.GetCredential(credentialID)
+	if err != nil {
+		log.Println("GetCredential fo real", credentialID, err)
+		return "", err
+	}
+
+	s, err := json.Marshal(credential)
+	if err != nil {
+		log.Println("GetCredential json marshal", credentialID, err)
+		return "", err
+	}
+
+	log.Println("GetCredential", credential)
 
 	return string(s), nil
 }
@@ -300,8 +371,8 @@ func createClient(ctx *ariescontext.Provider) (*didexchange.Client, error) {
 
 	client, err := didexchange.New(ctx)
 	if err != nil {
-		log.Println("failed to create didexchange", err)
-		return nil, errors.Wrap(err, "failed to create client")
+		log.Println("createClient", err)
+		return nil, err
 	}
 
 	return client, nil
