@@ -25,6 +25,12 @@ const mockConnections: Connection[] = [
 
 export const ConnectionsScreen = (props: ConnectionsScreenProps): ListElement => {
     useEffect(() => {
+        NativeModules.Nymble.setDBPath((data) => {
+            console.log(data);
+        }, (err) => {
+            console.log("setDBPath error", err)
+        });
+
         NativeModules.Nymble.hasRouterConnection((data) => {
             console.log(data);
             if (data === false) {
@@ -33,6 +39,12 @@ export const ConnectionsScreen = (props: ConnectionsScreenProps): ListElement =>
                     console.log(data);
                 }, (err) => {
                     console.log("registerWithAgency error", err)
+                });
+            } else {
+                NativeModules.Nymble.listConnections((data) => {
+                    console.log(data);
+                }, (err) => {
+                    console.log("listConnections error", err)
                 });
             }
         }, (err) => {

@@ -1,5 +1,6 @@
 package com.esquive.bridge
 
+import android.content.Context
 import android.util.Log
 import com.facebook.react.bridge.Callback
 import com.facebook.react.bridge.ReactApplicationContext
@@ -19,6 +20,7 @@ WritableMap
 class NymbleModule internal constructor(reactContext: ReactApplicationContext?) : ReactContextBaseJavaModule(reactContext!!) {
 
     private val tag = "Nymble"
+    private val filesDir = reactContext?.filesDir
 
     @ReactMethod
     fun registerWithAgency(success: Callback, error: Callback) {
@@ -106,6 +108,13 @@ class NymbleModule internal constructor(reactContext: ReactApplicationContext?) 
             context.getJSModule(RCTDeviceEventEmitter::class.java)
                     .emit(channel, message)
         })
+    }
+
+    @ReactMethod
+    fun setDBPath(success: Callback, error: Callback) {
+        Nymble.setDBPath(this.filesDir?.absolutePath)
+
+        success.invoke("success")
     }
 
     override fun getName(): String {

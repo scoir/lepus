@@ -67,6 +67,8 @@ func TestDebugServer() {
 //
 //noinspection GoUnusedExportedFunction
 func HasRouterConnection() (bool, error) {
+	log.Println("dbPath", dbPath)
+
 	ctx, err := getContext()
 	if err != nil {
 		log.Println(" HasRouterConnection get context", err)
@@ -159,11 +161,16 @@ func RegisterWithAgency() error {
 			return err
 		}
 
-		log.Println("MyDID: %s\nTheirDID: %s\nState: %s, Endpoint: %s\n", connection.MyDID, connection.TheirDID, connection.State, connection.ServiceEndPoint)
+		log.Println(fmt.Sprintf("MyDID: %s\nTheirDID: %s\nState: %s, Endpoint: %s\n",
+			connection.MyDID, connection.TheirDID, connection.State, connection.ServiceEndPoint))
 
-		if connection.State == "completed" {
+		if connection.State == "completed" || connection.State == "abandoned" {
 			break
 		}
+	}
+
+	if connection == nil {
+		return errors.New("connection abandoned")
 	}
 
 	myRouter, err := route.New(ctx)
@@ -179,6 +186,19 @@ func RegisterWithAgency() error {
 	}
 
 	log.Println("RegisterWithAgency done")
+
+	req := &didexchange.QueryConnectionsParams{
+		State: "",
+	}
+	conns, err := client.QueryConnections(req)
+	if err != nil {
+		log.Println("ListConnections QueryConnections", err)
+	}
+	for _, conn := range conns {
+		log.Println(conn)
+	}
+
+	ListConnections()
 
 	return nil
 }
@@ -233,6 +253,8 @@ func HandleInvite(invite string) (string, error) {
 //
 //noinspection GoUnusedExportedFunction
 func ListConnections() (string, error) {
+	log.Println("dbPath again", dbPath)
+
 	ctx, err := getContext()
 	if err != nil {
 		return "", err
@@ -395,4 +417,12 @@ func getContext() (*ariescontext.Provider, error) {
 	}
 
 	return ctx, nil
+}
+
+var dbPath string
+// SetDBPath global for storing the couchdb path on device
+//
+//noinspection GoUnusedExportedFunction
+func SetDBPath(s string) {
+	dbPath = s
 }
