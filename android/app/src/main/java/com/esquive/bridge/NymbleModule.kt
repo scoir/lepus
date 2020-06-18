@@ -109,13 +109,6 @@ class NymbleModule internal constructor(reactContext: ReactApplicationContext?) 
         })
     }
 
-    @ReactMethod
-    fun setDBPath(success: Callback, error: Callback) {
-        Nymble.setDBPath(this.filesDir?.absolutePath)
-
-        success.invoke("success")
-    }
-
     override fun getName(): String {
         return "Nymble"
     }

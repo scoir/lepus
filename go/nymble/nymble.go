@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"net/http"
 	"time"
 
 	"github.com/hyperledger/aries-framework-go/pkg/client/didexchange"
@@ -13,7 +14,7 @@ import (
 	"github.com/hyperledger/aries-framework-go/pkg/didcomm/transport/ws"
 	"github.com/hyperledger/aries-framework-go/pkg/framework/aries"
 	ariescontext "github.com/hyperledger/aries-framework-go/pkg/framework/context"
-	"github.com/hyperledger/aries-framework-go/pkg/storage/mem"
+	"github.com/hyperledger/aries-framework-go/pkg/storage/couchdb"
 	"github.com/hyperledger/aries-framework-go/pkg/store/verifiable"
 	"github.com/pkg/errors"
 	"github.com/scoir/allez/pkg/routing_agent"
@@ -25,10 +26,7 @@ import (
 	"pkg/nymble/log"
 )
 
-const (
-	DefaultChannel = "default"
-)
-
+// EventBus to send responses up the chain
 type EventBus interface {
 	SendEvent(channel, message string)
 }
@@ -37,12 +35,10 @@ type EventBus interface {
 // public static native void async(EventBus bus);
 // This means we can't use the success callback handler in Java, the callback handler allows us to
 // publish back to react via RCTDeviceEventEmitter
-//
-// noinspection GoUnusedExportedFunction
 func Async(bus EventBus) string {
 	go func() {
 		time.Sleep(time.Second * 5)
-		bus.SendEvent(DefaultChannel, "moar poop")
+		bus.SendEvent("default", "foo")
 	}()
 
 	return ""
@@ -52,23 +48,26 @@ type wrapper struct {
 	Value interface{} `json:"value"`
 }
 
-// noinspection GoUnusedExportedFunction
+// TestDebugServer forces log output
 func TestDebugServer() {
-	log.Println("testy badger")
+	log.Println("TestDebugServer")
 
 	log.Println("RouterAddress", config.RouterAddress)
 	log.Println("RouterPort", config.RouterPort)
 
 	log.Println("DebugIP", config.DebugIP)
 	log.Println("DebugPort", config.DebugPort)
+
+	log.Println("CouchDBAddress", config.CouchDBAddress)
+	log.Println("CouchDBUser", config.CouchDBUser)
+	log.Println("CouchDBPassword", config.CouchDBPassword)
+
+	resp, err := http.Get(fmt.Sprintf("http://%s:5984/", config.CouchDBAddress))
+	log.Println(resp, err)
 }
 
 //HasRouterConnection checks if a router connection has been previously establish
-//
-//noinspection GoUnusedExportedFunction
 func HasRouterConnection() (bool, error) {
-	log.Println("dbPath", dbPath)
-
 	ctx, err := getContext()
 	if err != nil {
 		log.Println(" HasRouterConnection get context", err)
@@ -91,14 +90,10 @@ func HasRouterConnection() (bool, error) {
 		return false, err
 	}
 
-	log.Println("HasRouterConnection", len(routerConn) > 0)
-
 	return len(routerConn) > 0, nil
 }
 
 //RegisterWithAgency establishes a connection with the agency
-//
-//noinspection GoUnusedExportedFunction
 func RegisterWithAgency() error {
 	cc, err := grpc.Dial(fmt.Sprintf("%s:%s", config.RouterAddress, config.RouterPort), grpc.WithInsecure())
 	if err != nil {
@@ -144,9 +139,6 @@ func RegisterWithAgency() error {
 
 	go service.AutoExecuteActionEvent(actionCh)
 
-	log.Println("RegisterWithAgency received the invitation")
-	log.Println(resp.Invitation)
-
 	connectionID, err := client.HandleInvitation(invite)
 	if err != nil {
 		return errors.Wrap(err, "unable to handle invitation")
@@ -160,9 +152,6 @@ func RegisterWithAgency() error {
 			log.Println("failed to get connection: %v\n", err)
 			return err
 		}
-
-		log.Println(fmt.Sprintf("MyDID: %s\nTheirDID: %s\nState: %s, Endpoint: %s\n",
-			connection.MyDID, connection.TheirDID, connection.State, connection.ServiceEndPoint))
 
 		if connection.State == "completed" || connection.State == "abandoned" {
 			break
@@ -187,25 +176,10 @@ func RegisterWithAgency() error {
 
 	log.Println("RegisterWithAgency done")
 
-	req := &didexchange.QueryConnectionsParams{
-		State: "",
-	}
-	conns, err := client.QueryConnections(req)
-	if err != nil {
-		log.Println("ListConnections QueryConnections", err)
-	}
-	for _, conn := range conns {
-		log.Println(conn)
-	}
-
-	ListConnections()
-
 	return nil
 }
 
 // HandleInvite processes the data provided by a scanned QR code in the mobile applications
-//
-//noinspection GoUnusedExportedFunction
 func HandleInvite(invite string) (string, error) {
 	ctx, err := getContext()
 	if err != nil {
@@ -250,11 +224,7 @@ func HandleInvite(invite string) (string, error) {
 }
 
 // ListConnections currently only returns "completed" connections
-//
-//noinspection GoUnusedExportedFunction
 func ListConnections() (string, error) {
-	log.Println("dbPath again", dbPath)
-
 	ctx, err := getContext()
 	if err != nil {
 		return "", err
@@ -266,9 +236,7 @@ func ListConnections() (string, error) {
 		return "", err
 	}
 
-	req := &didexchange.QueryConnectionsParams{
-		State: "",
-	}
+	req := &didexchange.QueryConnectionsParams{}
 	conns, err := client.QueryConnections(req)
 	if err != nil {
 		log.Println("ListConnections QueryConnections", err)
@@ -284,14 +252,10 @@ func ListConnections() (string, error) {
 		return "", err
 	}
 
-	log.Println("ListConnections", string(s))
-
 	return string(s), nil
 }
 
 //GetConnection fetches single connection record for given id
-//
-//noinspection GoUnusedExportedFunction
 func GetConnection(connectionID string) (string, error) {
 	ctx, err := getContext()
 	if err != nil {
@@ -313,14 +277,10 @@ func GetConnection(connectionID string) (string, error) {
 		return "", err
 	}
 
-	log.Println("GetConnection", conn)
-
 	return string(b), nil
 }
 
-// List Credentials all credentials in wallet
-//
-//noinspection GoUnusedExportedFunction
+// ListCredentials all credentials in wallet
 func ListCredentials() (string, error) {
 	ctx, err := getContext()
 	if err != nil {
@@ -334,7 +294,12 @@ func ListCredentials() (string, error) {
 		return "", err
 	}
 
-	creds := vc.GetCredentials()
+	creds, err := vc.GetCredentials()
+	if err != nil {
+		log.Println("GetCredentials", err)
+		return "", nil
+	}
+
 	for _, cr := range creds {
 		log.Println(cr.ID, ":", cr.Name)
 		cred, err := vc.GetCredential(cr.ID)
@@ -357,8 +322,6 @@ func ListCredentials() (string, error) {
 }
 
 // GetCredential returns a single credential by id
-//
-//noinspection GoUnusedExportedFunction
 func GetCredential(credentialID string) (string, error) {
 	ctx, err := getContext()
 	if err != nil {
@@ -384,8 +347,6 @@ func GetCredential(credentialID string) (string, error) {
 		return "", err
 	}
 
-	log.Println("GetCredential", credential)
-
 	return string(s), nil
 }
 
@@ -401,10 +362,18 @@ func createClient(ctx *ariescontext.Provider) (*didexchange.Client, error) {
 }
 
 func getContext() (*ariescontext.Provider, error) {
+
+	cdb, err := couchdbstore.NewProvider(fmt.Sprintf("http://%s:%s@%s:5984/",
+		config.CouchDBUser, config.CouchDBPassword, config.CouchDBAddress))
+	if err != nil {
+		log.Println("getContext couchdb store new provider", err)
+		return nil, err
+	}
+
 	framework, err := aries.New(
 		aries.WithTransportReturnRoute("all"),
 		aries.WithOutboundTransports(ws.NewOutbound()),
-		aries.WithStoreProvider(mem.NewProvider()),
+		aries.WithStoreProvider(cdb),
 		aries.WithProtocols(messagepickupSvc.ServiceCreator(nil), basicmessageSvc.ServiceCreator()),
 	)
 
@@ -417,12 +386,4 @@ func getContext() (*ariescontext.Provider, error) {
 	}
 
 	return ctx, nil
-}
-
-var dbPath string
-// SetDBPath global for storing the couchdb path on device
-//
-//noinspection GoUnusedExportedFunction
-func SetDBPath(s string) {
-	dbPath = s
 }

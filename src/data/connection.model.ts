@@ -1,34 +1,21 @@
 export class Connection {
 
     constructor(
-        readonly name: string,
-        readonly did: string,
-        readonly verkey: string,
+        readonly ConnectionID: string,
+        readonly State: string,
+        readonly ThreadID: string,
+        readonly ParentThreadID: string,
+        readonly TheirLabel: string,
+        readonly TheirDID: string,
+        readonly MyDID: string,
+        readonly ServiceEndPoint: string,
+        readonly RecipientKeys: [string],
+        readonly RoutingKeys: [string],
+        readonly InvitationID: string,
+        readonly InvitationDID: string,
+        readonly Implicit: boolean,
+        readonly Namespace: string,
     ) {
 
-    }
-
-    static mocked(): Connection {
-        return new Connection(
-            'Faux',
-            'did',
-            'verkey',
-        );
-    }
-
-    static mockedAgain(): Connection {
-        return new Connection(
-            'Something',
-            'diddid',
-            'verkeyverkey',
-        );
-    }
-
-    static mockedAgainAgain(): Connection {
-        return new Connection(
-            'Else',
-            'poop',
-            'pee',
-        );
     }
 }

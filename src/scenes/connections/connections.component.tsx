@@ -1,5 +1,5 @@
 import React, {useEffect} from 'react';
-import {ListRenderItemInfo, NativeModules} from 'react-native';
+import {ListRenderItemInfo, NativeModules, RefreshControl, SafeAreaView} from 'react-native';
 import {ConnectionsScreenProps} from "../../navigation/connections.navigator";
 import {
     Input,
@@ -17,51 +17,66 @@ import {AppRoute} from "../../navigation/app-routes";
 import {MenuIcon, SearchIcon} from '../../assets/icons';
 import {Toolbar} from "../../components/toolbar.component";
 
-const mockConnections: Connection[] = [
-    Connection.mocked(),
-    Connection.mockedAgain(),
-    Connection.mockedAgainAgain(),
-];
-
 export const ConnectionsScreen = (props: ConnectionsScreenProps): ListElement => {
-    useEffect(() => {
-        NativeModules.Nymble.setDBPath((data) => {
-            console.log(data);
-        }, (err) => {
-            console.log("setDBPath error", err)
+    const unpack = (data) => {
+        let d = JSON.parse(data);
+
+        if ('value' in d) {
+            return d.value
+        }
+        return d;
+    }
+
+    const [refreshing, setRefreshing] = React.useState(false);
+
+    function wait(timeout) {
+        return new Promise(resolve => {
+            setTimeout(resolve, timeout);
         });
+    }
+
+    const onRefresh = React.useCallback(() => {
+        setRefreshing(true);
+
+        wait(2000).then(() => setRefreshing(false));
+    }, [refreshing]);
+
+    useEffect(() => {
 
         NativeModules.Nymble.hasRouterConnection((data) => {
-            console.log(data);
             if (data === false) {
-                console.log("registering with agency")
                 NativeModules.Nymble.registerWithAgency((data) => {
                     console.log(data);
+                    NativeModules.Nymble.listConnections((data) => {
+                        setConnections(unpack(data));
+                    }, (err) => {
+                        console.log("listConnections error", err);
+                    });
                 }, (err) => {
-                    console.log("registerWithAgency error", err)
-                });
-            } else {
-                NativeModules.Nymble.listConnections((data) => {
-                    console.log(data);
-                }, (err) => {
-                    console.log("listConnections error", err)
+                    console.log("registerWithAgency error", err);
                 });
             }
+            NativeModules.Nymble.listConnections((data) => {
+                setConnections(unpack(data));
+            }, (err) => {
+                console.log("listConnections error", err);
+            });
+
         }, (err) => {
-            console.log("hasRouteConnection error", err)
+            console.log("hasRouteConnection error", err);
         });
     }, []);
 
-    const [connections, setConnections] = React.useState<Connection[]>(mockConnections);
+    const [connections, setConnections] = React.useState<Connection[]>([]);
     const [query, setQuery] = React.useState<string>('');
     const styles = useStyleSheet(themedStyles);
 
     const onChangeQuery = (query: string): void => {
-        const connections: Connection[] = mockConnections.filter((conn: Connection): boolean => {
-            return conn.did.toLowerCase().includes(query.toLowerCase());
+        const conns: Connection[] = connections.filter((conn: Connection): boolean => {
+            return conn.TheirLabel.toLowerCase().includes(query.toLowerCase());
         });
 
-        setConnections(connections);
+        setConnections(conns);
         setQuery(query);
     };
 
@@ -75,12 +90,12 @@ export const ConnectionsScreen = (props: ConnectionsScreenProps): ListElement =>
             style={styles.item}
             onPress={navigateConnectionDetails}>
             <Text category='s1'>
-                {item.did}
+                {item.TheirLabel}
             </Text>
             <Text
                 appearance='hint'
                 category='c1'>
-                {item.verkey}
+                {item.TheirDID}
             </Text>
         </ListItem>
     );
@@ -99,11 +114,14 @@ export const ConnectionsScreen = (props: ConnectionsScreenProps): ListElement =>
                 icon={SearchIcon}
                 onChangeText={onChangeQuery}
             />
-            <List
-                style={styles.list}
-                data={connections}
-                renderItem={renderConnection}
-            />
+            <SafeAreaView style={styles.container}>
+                <RefreshControl refreshing={refreshing} onRefresh={onRefresh}/>
+                <List
+                    style={styles.list}
+                    data={connections}
+                    renderItem={renderConnection}
+                />
+            </SafeAreaView>
         </Layout>
     );
 }

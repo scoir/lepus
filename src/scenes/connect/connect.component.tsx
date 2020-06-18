@@ -46,15 +46,6 @@ const barcodeRecognized = (barcode) => {
     });
 };
 
-const unpack = (data) => {
-    let d = JSON.parse(data);
-
-    if ('value' in d) {
-        return d.value
-    }
-    return d;
-}
-
 export const ConnectScreen = (props: ConnectScreenProps): SafeAreaLayoutElement => (
 
     <SafeAreaLayout

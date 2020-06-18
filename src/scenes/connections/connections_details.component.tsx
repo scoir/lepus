@@ -16,17 +16,51 @@ export const ConnectionsDetailsScreen = (props: ConnectionsDetailsScreenProps): 
     return (
         <React.Fragment>
             <Toolbar
-                title={connection.name}
+                title={connection.TheirLabel}
                 onBackPress={props.navigation.goBack}
             />
             <Layout style={styles.container}>
                 <View style={styles.detailsContainer}>
-                    <Text style={styles.title}>
-                        {connection.did}
+                    <Text style={styles.title}>ConnectionID
+                        {connection.ConnectionID}
                     </Text>
-                    <Text style={styles.title}>
-                        {connection.verkey}
+                    <Text style={styles.title}>State
+                        {connection.State}
                     </Text>
+                    <Text style={styles.title}>TheirDID
+                        {connection.TheirDID}
+                    </Text>
+                    <Text style={styles.title}>MyDID
+                        {connection.MyDID}
+                    </Text>
+                    <Text style={styles.title}>ServiceEndPoint
+                        {connection.ServiceEndPoint}
+                    </Text>
+                    {/*<Text style={styles.title}>RecipientKeys*/}
+                    {/*    {connection.RecipientKeys[0]}*/}
+                    {/*</Text>*/}
+                    {/*<Text style={styles.title}>RoutingKeys*/}
+                    {/*    {connection.RoutingKeys[0]}*/}
+                    {/*</Text>*/}
+                    <Text style={styles.title}>InvitationID
+                        {connection.InvitationID}
+                    </Text>
+                    <Text style={styles.title}>InvitationDID
+                        {connection.InvitationDID}
+                    </Text>
+                    {/*<Text style={styles.title}>Implicit*/}
+                    {/*    {connection.Implicit}*/}
+                    {/*</Text>*/}
+                    <Text style={styles.title}>Namespace
+                        {connection.Namespace}
+                    </Text>
+                    <Text style={styles.title}>ThreadID
+                        {connection.ThreadID}
+                    </Text>
+                    <Text style={styles.title}>ParentThreadID
+                        {connection.ParentThreadID}
+                    </Text>
+
                 </View>
             </Layout>
         </React.Fragment>
