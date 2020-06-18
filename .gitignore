@@ -20,8 +20,8 @@ DerivedData
 *.hmap
 *.ipa
 *.xcuserstate
-ios/esquive/nymble.framework
-ios/esquive/nymble.framework/
+ios/lepus/nymble.framework
+ios/lepus/nymble.framework/
 
 # Android/IntelliJ
 #

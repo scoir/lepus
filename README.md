@@ -1,14 +1,10 @@
-# Esquive
+# Lepus
 
-(Archaic) An evasive move to dodge or sidestep the attacker’s attack, generally followed with an attack of your own.
+Reference implementation for a reactive native application invoking the Aries Go SDK.
 
-## Prerequisites
+Currently the project relies on a PR pending branch fo the Aries Go framework https://github.com/hyperledger/aries-framework-go/pull/1926
 
-* Android Env (and/or)
-* iOS Env
-* React Native env - https://reactnative.dev/docs/environment-setup
-* Yarn
-* Gradle
+This project demonstrates how Aries Go can be called in a mobile application, it is not intended to a robust solution of any kind.
 
 ### build things
 
@@ -21,28 +17,13 @@
     make run-ios
     make run-android
 
-### check typescripty things?
-    yarn tsc
 
-### dependencies
-Nymble and Allez access
+### what's not included
 
-    go env -w GOPRIVATE=github.com/scoir/*
-    git config --global url."https://<Personal Access Token from Github>:x-oauth-basic@github.com/".insteadOf "https://github.com/"
-    
-### stuff griff is saving
+The network this application connects to, but it can be created the [von-network](https://github.com/bcgov/von-network) and the [aries go framework](https://github.com/hyperledger/aries-framework-go)
 
-publish async
-```
-NativeModules.Nymble.asyncHello(() => {})
-```
-
-register for async
-```
-DeviceEventEmitter.addListener('default', (message) => {
-    console.log(message)
-});
-```
+### acknowledgements
+`config.shlib` - is an answer from [stackexchange](https://unix.stackexchange.com/questions/175648/use-config-file-for-my-shell-script)
 
 ### attribution
 Photo by Fabrice Villard on Unsplash

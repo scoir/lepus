@@ -1,6 +1,6 @@
 .PHONY := clean tools
 
-ESQUIVE_ROOT=$(abspath .)
+LEPUS_ROOT=$(abspath .)
 
 init:
 	@echo "🌈  Making script executable"

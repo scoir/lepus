@@ -1,8 +1,8 @@
-package com.esquive
+package com.lepus
 
 import android.content.Context
 import androidx.multidex.MultiDexApplication
-import com.esquive.bridge.NymblePackage
+import com.lepus.bridge.NymblePackage
 import com.facebook.react.*
 import com.facebook.soloader.SoLoader
 import java.lang.reflect.InvocationTargetException
@@ -50,7 +50,7 @@ class MainApplication : MultiDexApplication(), ReactApplication {
          We use reflection here to pick up the class that initializes Flipper,
         since Flipper library is not available in release mode
         */
-                    val aClass = Class.forName("com.esquive.ReactNativeFlipper")
+                    val aClass = Class.forName("com.lepus.ReactNativeFlipper")
                     aClass
                             .getMethod("initializeFlipper", Context::class.java, ReactInstanceManager::class.java)
                             .invoke(null, context, reactInstanceManager)

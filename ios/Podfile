@@ -44,8 +44,8 @@ def flipper_post_install(installer)
   end
 end
 
-target 'esquive' do
-  # Pods for esquive
+target 'lepus' do
+  # Pods for lepus
   pod 'FBLazyVector', :path => "../node_modules/react-native/Libraries/FBLazyVector"
   pod 'FBReactNativeSpec', :path => "../node_modules/react-native/Libraries/FBReactNativeSpec"
   pod 'RCTRequired', :path => "../node_modules/react-native/Libraries/RCTRequired"
@@ -79,7 +79,7 @@ target 'esquive' do
 
   pod 'RNPermissions', :path => '../node_modules/react-native-permissions'
 
-  target 'esquiveTests' do
+  target 'lepusTests' do
     inherit! :complete
     # Pods for testing
   end
@@ -96,10 +96,10 @@ target 'esquive' do
   end
 end
 
-target 'esquive-tvOS' do
-  # Pods for esquive-tvOS
+target 'lepus-tvOS' do
+  # Pods for lepus-tvOS
 
-  target 'esquive-tvOSTests' do
+  target 'lepus-tvOSTests' do
     inherit! :search_paths
     # Pods for testing
   end

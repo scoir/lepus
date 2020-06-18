@@ -1,4 +1,4 @@
-package com.esquive.bridge
+package com.lepus.bridge
 
 import android.util.Log
 import com.facebook.react.bridge.Callback
