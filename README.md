@@ -2,7 +2,7 @@
 
 Reference implementation for a reactive native application invoking the Aries Go SDK.
 
-Currently the project relies on a PR pending branch fo the Aries Go framework https://github.com/hyperledger/aries-framework-go/pull/1926
+Currently, the project relies on a PR pending branch fo the Aries Go framework https://github.com/hyperledger/aries-framework-go/pull/1926
 
 This project demonstrates how Aries Go can be called in a mobile application, it is not intended to a robust solution of any kind.
 

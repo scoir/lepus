@@ -66,3 +66,4 @@ dist
 
 # go binaries
 go/bin/
+config/local.conf
