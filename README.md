@@ -6,6 +6,10 @@ Currently, the project relies on a PR pending branch fo the Aries Go framework h
 
 This project demonstrates how Aries Go can be called in a mobile application, it is not intended to a robust solution of any kind.
 
+## Architecture
+
+![Architecture](/static/lepus.png?raw=true "Lepus Architecture")
+
 ### build things
 
     npm i
