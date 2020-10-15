@@ -1,5 +1,4 @@
 #!/bin/bash
-# https://unix.stackexchange.com/questions/175648/use-config-file-for-my-shell-script
 source ./scripts/lepus.sh;
 
 LEPUS_ROOT=$(pwd)
