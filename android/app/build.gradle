@@ -1,6 +1,6 @@
 apply plugin: "com.android.application"
-apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
 
 import com.android.build.OutputFile
 
@@ -212,12 +212,14 @@ dependencies {
     def multidex_version = "2.0.1"
     implementation "androidx.multidex:multidex:$multidex_version"
 
-    implementation(name: 'nymble', ext: 'aar') { changing = true }
-    implementation fileTree(dir: "libs", include: ["*.jar"])
+
+    implementation project(path: ':aries-agent')
+//    implementation fileTree(dir: "libs", include: ["*.aar"])
     //noinspection GradleDynamicVersion
     implementation "com.facebook.react:react-native:+"  // From node_modules
 
     implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.0.0"
+    implementation 'com.google.code.gson:gson:2.8.6'
 
     debugImplementation("com.facebook.flipper:flipper:${FLIPPER_VERSION}") {
         exclude group: 'com.facebook.fbjni'

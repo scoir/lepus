@@ -26,7 +26,7 @@ const Stack = createStackNavigator<CredentialNavigatorParams>();
 
 export const CredentialsNavigator = (): React.ReactElement => (
     <Stack.Navigator headerMode='none'>
-        <Stack.Screen name={AppRoute.CREDENTIALS} component={CredentialsScreen}/>
-        <Stack.Screen name={AppRoute.CREDENTIALS_DETAILS} component={CredentialsDetailsScreen}/>
+        <Stack.Screen name={AppRoute.CREDENTIALS}  options={{title: AppRoute.CREDENTIALS}} component={CredentialsScreen}/>
+        <Stack.Screen name={AppRoute.CREDENTIALS_DETAILS}  options={{title: AppRoute.CREDENTIALS_DETAILS}} component={CredentialsDetailsScreen}/>
     </Stack.Navigator>
 );

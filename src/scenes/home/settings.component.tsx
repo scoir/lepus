@@ -7,7 +7,7 @@ import {SafeAreaLayout, SafeAreaLayoutElement, SaveAreaInset,} from '../../compo
 
 const test = () => {
     console.log("settings.component.tsx")
-    NativeModules.Nymble.testDebug((data) => {
+    NativeModules.Canis.testDebug((data) => {
         console.log(data);
     }, (err) => {
         console.log("testing error", err)
