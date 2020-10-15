@@ -1,10 +1,8 @@
 #!/bin/bash
-# https://unix.stackexchange.com/questions/175648/use-config-file-for-my-shell-script
-source ./scripts/config.shlib;
 
-LEPUS_ROOT=$(pwd)
+source ./scripts/lepus.sh;
 
 echo -e "🛠  Building..."
-cd go/nymble && gomobile bind -o "$LEPUS_ROOT"/ios/lepus/nymble.framework -target=ios > /dev/null
+cp "$ARIES_FRAMEWORK_GO_ROOT"/cmd/aries-agent-mobile/build/ios/AriesAgent.framework "$LEPUS_ROOT"/ios/lepus/AriesAgent.framework
 
 echo -e "✨ xcode should pick up the new framework automagically"

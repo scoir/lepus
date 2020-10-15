@@ -1,5 +1,5 @@
-import React from 'react';
-import {ListRenderItemInfo} from 'react-native';
+import React, {useEffect} from 'react';
+import {FlatList, ListRenderItemInfo, NativeModules} from 'react-native';
 import {CredentialsScreenProps} from "../../navigation/credentials.navigator";
 import {
     Input,
@@ -16,30 +16,50 @@ import {Credential} from "../../data/credential.model";
 import {AppRoute} from "../../navigation/app-routes";
 import {MenuIcon, SearchIcon} from '../../assets/icons';
 import {Toolbar} from "../../components/toolbar.component";
-
-const mockCredentials: Credential[] = [
-    Credential.mocked(),
-    Credential.mockedAgain(),
-    Credential.mockedAgainAgain(),
-];
+import {Connection} from "../../data/connection.model";
 
 export const CredentialsScreen = (props: CredentialsScreenProps): ListElement => {
+    const unpack = (data) => {
+        let d = JSON.parse(data);
 
-    const [connections, setCredentials] = React.useState<Credential[]>(mockCredentials);
+        if ('value' in d) {
+            return d.value
+        }
+        return d;
+    }
+
+    const [credentials, setCredentials] = React.useState<Credential[]>([]);
     const [query, setQuery] = React.useState<string>('');
     const styles = useStyleSheet(themedStyles);
 
-    const onChangeQuery = (query: string): void => {
-        const connections: Credential[] = mockCredentials.filter((conn: Credential): boolean => {
-            return conn.name.toLowerCase().includes(query.toLowerCase());
+    useEffect(() => {
+        return props.navigation.addListener('focus', () => {
+            NativeModules.Canis.listCredentials((data) => {
+                setCredentials(unpack(data));
+            }, (err) => {
+                console.log("listCredentials error", err);
+            });
         });
+    }, []);
 
-        setCredentials(connections);
-        setQuery(query);
+
+    const onChangeQuery = (query: string): void => {
+        NativeModules.Canis.listCredentials((data) => {
+            let remote = unpack(data)
+            const creds: Credential[] = remote.filter((cred: Credential): boolean => {
+                console.log(cred)
+                return cred.name.toLowerCase().includes(query.toLowerCase());
+            });
+
+            setCredentials(creds);
+            setQuery(query);
+        }, (err) => {
+            console.log("listCredentials error", err);
+        });
     };
 
     const navigateCredentialDetails = (connIndex: number): void => {
-        const {[connIndex]: credential} = connections;
+        const {[connIndex]: credential} = credentials;
         props.navigation.navigate(AppRoute.CREDENTIALS_DETAILS, {credential});
     };
 
@@ -53,7 +73,7 @@ export const CredentialsScreen = (props: CredentialsScreenProps): ListElement =>
             <Text
                 appearance='hint'
                 category='c1'>
-                {item.something}
+                {item.id}
             </Text>
         </ListItem>
     );
@@ -61,7 +81,7 @@ export const CredentialsScreen = (props: CredentialsScreenProps): ListElement =>
     return (
         <Layout style={styles.container}>
             <Toolbar
-                title='credentials'
+                title='Credentials'
                 backIcon={MenuIcon}
                 onBackPress={props.navigation.toggleDrawer}
             />
@@ -72,9 +92,10 @@ export const CredentialsScreen = (props: CredentialsScreenProps): ListElement =>
                 icon={SearchIcon}
                 onChangeText={onChangeQuery}
             />
-            <List
+            <FlatList
                 style={styles.list}
-                data={connections}
+                data={credentials}
+                keyExtractor={({id}, index) => id}
                 renderItem={renderCredential}
             />
         </Layout>

@@ -30,8 +30,7 @@ build/
 .gradle
 local.properties
 *.iml
-android/app/nymble.aar
-android/app/nymble-sources.jar
+android/aries-agent/aries-agent.aar
 
 # node.js
 #

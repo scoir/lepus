@@ -9,25 +9,14 @@ init:
 clean:
 	@./scripts/clean.sh
 
-tools:
-	go get golang.org/x/mobile/cmd/gomobile
-	gomobile init
-
-local:
-	@./scripts/create-local-config.sh
-
-android-aar: clean local
+android-aar: clean
 	@./scripts/android.sh
 
-ios-framework: clean local
+ios-framework: clean
 	@./scripts/ios.sh
 
 run-ios: ios-framework
 	@npx react-native run-ios
 
-run-android: android-aar
+run-android:
 	npx react-native run-android
-
-debug:
-	@echo "🐛  Running debug server"
-	@cd go/cmd/debug && go run debug.go

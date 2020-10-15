@@ -26,7 +26,7 @@ const Stack = createStackNavigator<ConnectNavigatorParams>();
 
 export const ConnectionsNavigator = (): React.ReactElement => (
     <Stack.Navigator headerMode='none'>
-        <Stack.Screen name={AppRoute.CONNECTIONS} component={ConnectionsScreen}/>
-        <Stack.Screen name={AppRoute.CONNECTIONS_DETAILS} component={ConnectionsDetailsScreen}/>
+        <Stack.Screen name={AppRoute.CONNECTIONS}  options={{title: AppRoute.CONNECTIONS}} component={ConnectionsScreen}/>
+        <Stack.Screen name={AppRoute.CONNECTIONS_DETAILS}  options={{title: AppRoute.CONNECTIONS_DETAILS}} component={ConnectionsDetailsScreen}/>
     </Stack.Navigator>
 );
