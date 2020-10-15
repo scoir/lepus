@@ -62,7 +62,3 @@ buck-out/
 /ios/Pods/
 
 dist
-
-# go binaries
-go/bin/
-config/local.conf
