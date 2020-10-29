@@ -16,7 +16,7 @@ export const CredentialsDetailsScreen = (props: CredentialsDetailsScreenProps): 
     return (
         <React.Fragment>
             <Toolbar
-                title={credential.name}
+                title="CLR Transcript"
                 onBackPress={props.navigation.goBack}
             />
             <Layout style={styles.container}>
@@ -25,7 +25,7 @@ export const CredentialsDetailsScreen = (props: CredentialsDetailsScreenProps): 
                         {credential.name}
                     </Text>
                     <Text style={styles.title}>
-                        {credential.something}
+                        {credential.id}
                     </Text>
                 </View>
             </Layout>

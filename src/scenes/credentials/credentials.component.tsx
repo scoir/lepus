@@ -58,15 +58,14 @@ export const CredentialsScreen = (props: CredentialsScreenProps): ListElement =>
         });
     };
 
-    const navigateCredentialDetails = (connIndex: number): void => {
-        const {[connIndex]: credential} = credentials;
+    const navigateCredentialDetails = (credential: Credential): void => {
         props.navigation.navigate(AppRoute.CREDENTIALS_DETAILS, {credential});
     };
 
     const renderCredential = ({item}: ListRenderItemInfo<Credential>): ListItemElement => (
         <ListItem
             style={styles.item}
-            onPress={navigateCredentialDetails}>
+            onPress={() => { navigateCredentialDetails(item)}}>
             <Text category='s1'>
                 {item.name}
             </Text>
