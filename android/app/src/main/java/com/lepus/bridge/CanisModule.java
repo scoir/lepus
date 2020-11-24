@@ -1,7 +1,6 @@
 package com.lepus.bridge;
 
 import android.os.Build;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -19,6 +18,8 @@ import com.lepus.bridge.model.Credential;
 import com.lepus.bridge.model.QueryConnectionResults;
 import com.lepus.bridge.model.QueryCredentialResults;
 
+import org.apache.http.NameValuePair;
+import org.apache.http.client.utils.URLEncodedUtils;
 import org.hyperledger.aries.api.AriesController;
 import org.hyperledger.aries.api.DIDExchangeController;
 import org.hyperledger.aries.api.VerifiableController;
@@ -28,10 +29,13 @@ import org.hyperledger.aries.models.CommandError;
 import org.hyperledger.aries.models.RequestEnvelope;
 import org.hyperledger.aries.models.ResponseEnvelope;
 
+import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Base64;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class CanisModule extends ReactContextBaseJavaModule implements DIDExchangeHandler.DIDExchangeCallback, IssueCredentialHandler.IssueCredentialCallback {
@@ -120,8 +124,27 @@ public class CanisModule extends ReactContextBaseJavaModule implements DIDExchan
             byte[] data = invitation.getBytes(StandardCharsets.UTF_8);
             byte[] decoded = Base64.getDecoder().decode(data);
 
+            String poop = new String(decoded);
 
-            res = didExchangeController.receiveInvitation(new RequestEnvelope(decoded));
+
+            List<NameValuePair> params = URLEncodedUtils.parse(new URI(poop), StandardCharsets.UTF_8);
+
+            NameValuePair value = null;
+            for (NameValuePair param : params) {
+                if (param.getName().equals("c_i") || param.getName().equals("_oob")) {
+                    value = param;
+                    break;
+                }
+            }
+
+            if (value == null) {
+                error.invoke("no matching param found for invite");
+                return;
+            }
+
+            byte[] inv = value.getValue().getBytes();
+
+            res = didExchangeController.receiveInvitation(new RequestEnvelope(inv));
             if (res.getError() != null) {
                 CommandError err = res.getError();
                 error.invoke(error.toString());
@@ -140,6 +163,10 @@ public class CanisModule extends ReactContextBaseJavaModule implements DIDExchan
             error.invoke(e.getMessage());
         }
 
+    }
+
+    public boolean containsName(final List<NameValuePair> list, final String name) {
+        return list.stream().anyMatch(o -> o.getName().equals(name));
     }
 
     @ReactMethod
@@ -236,7 +263,7 @@ public class CanisModule extends ReactContextBaseJavaModule implements DIDExchan
 
     @Override
     public void onOffer(String piid, String label) {
-        if(credentialOfferHandler != null) {
+        if (credentialOfferHandler != null) {
             credentialOfferHandler.invoke(piid, label);
         }
     }

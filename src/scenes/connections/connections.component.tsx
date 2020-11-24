@@ -43,7 +43,8 @@ export const ConnectionsScreen = (props: ConnectionsScreenProps): ListElement =>
     useEffect(() => {
         return props.navigation.addListener('focus', () => {
             NativeModules.Canis.listConnections((data) => {
-                setConnections(unpack(data));
+                console.log(unpack(data))
+                // setConnections(unpack(data));
             }, (err) => {
                 console.log("listConnections error", err);
             });
@@ -66,7 +67,6 @@ export const ConnectionsScreen = (props: ConnectionsScreenProps): ListElement =>
         }, (err) => {
             console.log("listConnections error", err);
         });
-
     };
 
     const navigateConnectionDetails = (connection: Connection): void => {
