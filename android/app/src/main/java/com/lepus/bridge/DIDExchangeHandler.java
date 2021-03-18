@@ -6,6 +6,7 @@ import android.util.Log;
 
 import androidx.annotation.RequiresApi;
 
+import com.facebook.react.bridge.Callback;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
@@ -30,6 +31,7 @@ public class DIDExchangeHandler implements Handler {
 
     public interface DIDExchangeCallback {
         void onInvited(String connectionID, String label);
+        void onCompleted(String connectionID, String label);
     }
 
     public DIDExchangeHandler(DIDExchangeController c, DIDExchangeCallback cb) {
@@ -50,12 +52,15 @@ public class DIDExchangeHandler implements Handler {
         Type msgType = new TypeToken<StateProtocolMsg<InviteStateMsg>>(){}.getType();
         StateProtocolMsg<InviteStateMsg> msg = gson.fromJson(lastMessage, msgType);
 
+        Log.d("received notification type: ", msg.message.Type);
         Log.d("received notification topic: ", lastTopic);
         Log.d("received notification message: ", lastMessage);
         Log.d("received notification message STATE: ", msg.message.StateID);
 
         if (msg.message.StateID.equals("invited") && msg.message.Type.equals("post_state")) {
             cb.onInvited(msg.message.getConnectionID(), msg.message.message.label);
+        } else if (msg.message.StateID.equals("completed") && msg.message.Type.equals("post_state")) {
+            cb.onCompleted(msg.message.getConnectionID(), msg.message.message.label);
         }
     }
 
@@ -73,10 +78,10 @@ public class DIDExchangeHandler implements Handler {
             env.setPayload(data);
             ResponseEnvelope res = ctrl.acceptInvitation(env);
             if(res.getError() != null && !res.getError().getMessage().isEmpty()) {
-                Log.d("ACCEPT_INVITATION", res.getError().toString());
+                Log.d("ACCEPT_INVITATION_ERROR", res.getError().toString());
             } else {
                 String receiveInvitationResponse = new String(res.getPayload(), StandardCharsets.UTF_8);
-                Log.d("ACCEPTING_INVITATION: ", receiveInvitationResponse);
+                Log.d("ACCEPT_INVITATION: ", receiveInvitationResponse);
             }
 
         } catch (Exception e) {

@@ -1,14 +1,18 @@
-import React from 'react';
+import React, {useContext} from 'react';
 import {Alert, NativeModules, StyleSheet, View} from 'react-native';
 import {Divider, Layout, Text} from '@ui-kitten/components';
 import {ConnectScreenProps} from '../../navigation/connect.navigator';
+import { StateContext, state } from '../../state'
 import {Toolbar} from '../../components/toolbar.component';
 import {SafeAreaLayout, SafeAreaLayoutElement, SaveAreaInset,} from '../../components/safe-area-layout.component';
 import {MenuIcon} from '../../assets/icons';
 import QRCodeScanner from 'react-native-qrcode-scanner';
 import {AppRoute} from "../../navigation/app-routes";
+import {encodeURLSafe as encodeB64, decode as decodeB64} from "@stablelib/base64";
+import {decode as decodeUTF} from "@stablelib/utf8";
 
 export const ConnectScreen = (props: ConnectScreenProps): SafeAreaLayoutElement => {
+    const { keyManager, wallet } = useContext(StateContext)
 
     const PendingView = () => (
         <View
@@ -30,35 +34,53 @@ export const ConnectScreen = (props: ConnectScreenProps): SafeAreaLayoutElement 
         }
     }
 
-    const connect = (connectionID, label) => {
-        NativeModules.Canis.acceptInvitation(connectionID, label, (msg) => {
-            props.navigation.navigate(AppRoute.CONNECTIONS)
-        }, (err) => {
-            console.log("something went wrong accepting invitation ", err)
-        })
-    }
-
     const barcodeRecognized = (barcode) => {
-        console.log(barcode)
-        NativeModules.Canis.handleInvitation(barcode.data, (connectionID, label) => {
-            Alert.alert(
-                "Accept connection from:",
-                label,
-                [
-                    {text: "Cancel", onPress: reset, style: "cancel"},
-                    {
-                        text: "OK", onPress: () => {
-                            connect(connectionID, label)
-                        }
-                    }
-                ],
-            );
 
-        }, (err) => {
-            console.log("something went wrong handling the invitation", err)
-            // reset();
+        let bc = decodeB64(barcode.data);
+        let body = JSON.stringify({
+            invitation: decodeUTF(bc)
         });
+
+        let invite = JSON.parse(decodeUTF(bc))
+        let label = invite.label
+
+        Alert.alert(
+            "Accept connection from:",
+            label,
+            [
+                {text: "Cancel", onPress: reset, style: "cancel"},
+                {
+                    text: "OK", onPress: () => {
+                        connect(body)
+                    }
+                }
+            ],
+        );
+
     };
+
+    const connect = (body) => {
+        console.log(wallet.getCloudAgentId())
+
+        let key = keyManager.sign(body)
+        fetch("http://10.0.2.2:11004/cloudagents/invitation", {
+            method: "POST",
+            headers: {
+                Accept: "application/json",
+                'Content-Type': "application/json",
+                'x-canis-cloud-agent-id': wallet.getCloudAgentId(),
+                'x-canis-cloud-agent-signature': encodeB64(key),
+            },
+            body: body
+        }).then(function (response) {
+            response.json().then(function (json) {
+                console.log(json);
+                props.navigation.navigate(AppRoute.CONNECTIONS)
+            });
+
+        });
+
+    }
 
 
     return (

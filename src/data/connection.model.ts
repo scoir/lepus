@@ -1,13 +1,13 @@
 export class Connection {
 
     constructor(
-        readonly ConnectionID: string,
-        readonly State: string,
+        readonly id: string,
+        readonly state: string,
         readonly ThreadID: string,
         readonly ParentThreadID: string,
-        readonly TheirLabel: string,
-        readonly TheirDID: string,
-        readonly MyDID: string,
+        readonly name: string,
+        readonly their_did: string,
+        readonly my_did: string,
         readonly ServiceEndPoint: string,
         readonly RecipientKeys: [string],
         readonly RoutingKeys: [string],

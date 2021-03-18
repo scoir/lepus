@@ -5,15 +5,6 @@ import {SettingsScreenProps} from '../../navigation/home.navigator';
 import {Toolbar} from '../../components/toolbar.component';
 import {SafeAreaLayout, SafeAreaLayoutElement, SaveAreaInset,} from '../../components/safe-area-layout.component';
 
-const test = () => {
-    console.log("settings.component.tsx")
-    NativeModules.Canis.testDebug((data) => {
-        console.log(data);
-    }, (err) => {
-        console.log("testing error", err)
-    });
-}
-
 export const SettingsScreen = (props: SettingsScreenProps): SafeAreaLayoutElement => (
     <SafeAreaLayout
         style={styles.safeArea}
@@ -25,13 +16,11 @@ export const SettingsScreen = (props: SettingsScreenProps): SafeAreaLayoutElemen
         <Divider/>
         <Layout style={styles.container}>
             <Button
-                style={styles.boom}
-                onPress={test}>
+                style={styles.boom}>
                 Nuke DB
             </Button>
             <Button
-                style={styles.submitButton}
-                onPress={test}>
+                style={styles.submitButton}>
                 Test Debug Server
             </Button>
         </Layout>

@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useContext} from 'react';
 import {FlatList, ListRenderItemInfo, NativeModules, RefreshControl, SafeAreaView} from 'react-native';
 import {ConnectionsScreenProps} from "../../navigation/connections.navigator";
 import {
@@ -15,17 +15,12 @@ import {Connection} from "../../data/connection.model";
 import {AppRoute} from "../../navigation/app-routes";
 import {MenuIcon, SearchIcon} from '../../assets/icons';
 import {Toolbar} from "../../components/toolbar.component";
+import {encodeURLSafe as encodeB64} from "@stablelib/base64";
+import {StateContext, state} from '../../state'
+import {useInterval} from '../../hooks/use.interval'
 
 export const ConnectionsScreen = (props: ConnectionsScreenProps): ListElement => {
-    const unpack = (data) => {
-        let d = JSON.parse(data);
-
-        if ('value' in d) {
-            return d.value
-        }
-        return d;
-    }
-
+    const {keyManager, wallet} = useContext(StateContext)
     const [refreshing, setRefreshing] = React.useState(false);
 
     function wait(timeout) {
@@ -40,33 +35,67 @@ export const ConnectionsScreen = (props: ConnectionsScreenProps): ListElement =>
         wait(2000).then(() => setRefreshing(false));
     }, [refreshing]);
 
+
+    useInterval(() => {
+       // Your custom logic here
+        let body = '{}';
+
+        listConnections(body, function (conns) {
+            setConnections(conns);
+        })
+    }, 1000);
+
     useEffect(() => {
-        return props.navigation.addListener('focus', () => {
-            NativeModules.Canis.listConnections((data) => {
-                setConnections(unpack(data));
-            }, (err) => {
-                console.log("listConnections error", err);
-            });
-        });
     }, []);
+
+    function handleErrors(response) {
+        if (!response.ok) {
+            throw Error(response.statusText);
+        }
+        return response;
+    }
+
+    function listConnections(body, success) {
+        if (wallet.getCloudAgentId() === undefined) {
+            success([])
+            return
+        }
+
+        let key = keyManager.sign(body)
+        fetch("http://10.0.2.2:11004/cloudagents/connections", {
+            method: "POST",
+            headers: {
+                Accept: "application/json",
+                'Content-Type': "application/json",
+                'x-canis-cloud-agent-id': wallet.getCloudAgentId(),
+                'x-canis-cloud-agent-signature': encodeB64(key),
+            },
+            body: body
+        })
+            .then(handleErrors)
+            .then(function (response) {
+                response.json().then(function (json) {
+                    success(json.connections)
+                })
+            })
+            .catch(error => console.log(error));
+
+    }
 
     const [connections, setConnections] = React.useState<Connection[]>([]);
     const [query, setQuery] = React.useState<string>('');
     const styles = useStyleSheet(themedStyles);
 
     const onChangeQuery = (query: string): void => {
-        NativeModules.Canis.listConnections((data) => {
-            let remote = unpack(data)
+        let body = '{}'
+        listConnections(body, function (remote) {
             const conns: Connection[] = remote.filter((conn: Connection): boolean => {
-                return conn.TheirLabel.toLowerCase().includes(query.toLowerCase());
+                return conn.name.toLowerCase().includes(query.toLowerCase());
             });
 
             setConnections(conns);
             setQuery(query);
-        }, (err) => {
-            console.log("listConnections error", err);
-        });
-
+        })
     };
 
     const navigateConnectionDetails = (connection: Connection): void => {
@@ -78,12 +107,12 @@ export const ConnectionsScreen = (props: ConnectionsScreenProps): ListElement =>
             style={styles.item}
             onPress={() => navigateConnectionDetails(item)}>
             <Text category='s1'>
-                {item.TheirLabel}
+                {item.name}
             </Text>
             <Text
                 appearance='hint'
                 category='c1'>
-                {item.TheirDID}
+                {item.their_did}
             </Text>
         </ListItem>
     );
@@ -107,7 +136,7 @@ export const ConnectionsScreen = (props: ConnectionsScreenProps): ListElement =>
                 <FlatList
                     style={styles.list}
                     data={connections}
-                    keyExtractor={({ConnectionID}, index) => ConnectionID}
+                    keyExtractor={({id}, index) => id}
                     renderItem={renderConnection}
                 />
             </SafeAreaView>
