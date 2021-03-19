@@ -16,7 +16,7 @@ import {AppRoute} from "../../navigation/app-routes";
 import {MenuIcon, SearchIcon} from '../../assets/icons';
 import {Toolbar} from "../../components/toolbar.component";
 import {encodeURLSafe as encodeB64} from "@stablelib/base64";
-import {StateContext, state} from '../../state'
+import {StateContext} from '../../state'
 import {useInterval} from '../../hooks/use.interval'
 
 export const ConnectionsScreen = (props: ConnectionsScreenProps): ListElement => {

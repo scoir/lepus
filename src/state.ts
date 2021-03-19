@@ -1,6 +1,6 @@
 import React from "react";
 import {CreateKeyManager} from "./service/key.manager.service";
-import {CreateWallet} from "./service/wallet";
+import {CreateWallet} from "./service/wallet.service";
 
 export const keyManager = CreateKeyManager();
 export const wallet = CreateWallet();

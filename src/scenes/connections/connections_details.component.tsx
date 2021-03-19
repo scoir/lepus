@@ -16,22 +16,22 @@ export const ConnectionsDetailsScreen = (props: ConnectionsDetailsScreenProps): 
     return (
         <React.Fragment>
             <Toolbar
-                title={connection.TheirLabel}
+                title={connection.name}
                 onBackPress={props.navigation.goBack}
             />
             <Layout style={styles.container}>
                 <View style={styles.detailsContainer}>
                     <Text style={styles.title}>ConnectionID
-                        {connection.ConnectionID}
+                        {connection.id}
                     </Text>
                     <Text style={styles.title}>State
-                        {connection.State}
+                        {connection.state}
                     </Text>
                     <Text style={styles.title}>TheirDID
-                        {connection.TheirDID}
+                        {connection.their_did}
                     </Text>
                     <Text style={styles.title}>MyDID
-                        {connection.MyDID}
+                        {connection.my_did}
                     </Text>
                     <Text style={styles.title}>ServiceEndPoint
                         {connection.ServiceEndPoint}

@@ -4,28 +4,45 @@ import {Button, Divider, Layout, Text} from '@ui-kitten/components';
 import {SettingsScreenProps} from '../../navigation/home.navigator';
 import {Toolbar} from '../../components/toolbar.component';
 import {SafeAreaLayout, SafeAreaLayoutElement, SaveAreaInset,} from '../../components/safe-area-layout.component';
+import {firebase} from "@react-native-firebase/auth";
+import {AppRoute} from "../../navigation/app-routes";
 
-export const SettingsScreen = (props: SettingsScreenProps): SafeAreaLayoutElement => (
-    <SafeAreaLayout
-        style={styles.safeArea}
-        insets={SaveAreaInset.TOP}>
-        <Toolbar
-            title='Settings'
-            onBackPress={props.navigation.goBack}
-        />
-        <Divider/>
-        <Layout style={styles.container}>
-            <Button
-                style={styles.boom}>
-                Nuke DB
-            </Button>
-            <Button
-                style={styles.submitButton}>
-                Test Debug Server
-            </Button>
-        </Layout>
-    </SafeAreaLayout>
-);
+
+export const SettingsScreen = (props: SettingsScreenProps): SafeAreaLayoutElement => {
+
+
+    const signOut = () => {
+        firebase.auth().signOut().then(() => {
+            // @ts-ignore
+            props.navigation.navigate(AppRoute.SIGN_IN)
+        })
+        .catch(error => console.log(error))
+    }
+
+
+    return (
+        <SafeAreaLayout
+            style={styles.safeArea}
+            insets={SaveAreaInset.TOP}>
+            <Toolbar
+                title='Settings'
+                onBackPress={props.navigation.goBack}
+            />
+            <Divider/>
+            <Layout style={styles.container}>
+                <Button
+                    style={styles.boom}>
+                    Nuke DB
+                </Button>
+                <Button
+                    style={styles.submitButton}
+                    onPress={() => signOut()}>
+                    Logout
+                </Button>
+            </Layout>
+        </SafeAreaLayout>
+    );
+};
 
 const styles = StyleSheet.create({
     safeArea: {

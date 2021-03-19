@@ -1,6 +1,6 @@
 import Rx from 'rxjs/Rx';
-import {encode as encodeUTF} from '@stablelib/utf8'
-import {generateKeyPair, generateKeyPairFromSeed, sign as edSign} from '@stablelib/ed25519'
+import {encode as encodeBase64} from "@stablelib/base64";
+import firestore from '@react-native-firebase/firestore';
 
 
 export const CreateWallet = () => {

@@ -1,4 +1,6 @@
 export enum AppRoute {
+    SIGN_IN = 'Signin',
+    SIGN_UP = 'Signup',
     HOME = 'Home',
     CONNECT = 'Connect',
     CONNECTIONS = 'Connections',
