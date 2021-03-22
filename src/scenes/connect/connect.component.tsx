@@ -8,7 +8,7 @@ import {SafeAreaLayout, SafeAreaLayoutElement, SaveAreaInset,} from '../../compo
 import {MenuIcon} from '../../assets/icons';
 import QRCodeScanner from 'react-native-qrcode-scanner';
 import {AppRoute} from "../../navigation/app-routes";
-import {encodeURLSafe as encodeB64, decode as decodeB64} from "@stablelib/base64";
+import {encodeURLSafe as encodeB64, decodeURLSafe as decodeB64} from "@stablelib/base64";
 import {decode as decodeUTF} from "@stablelib/utf8";
 
 export const ConnectScreen = (props: ConnectScreenProps): SafeAreaLayoutElement => {
@@ -40,6 +40,8 @@ export const ConnectScreen = (props: ConnectScreenProps): SafeAreaLayoutElement 
         let body = JSON.stringify({
             invitation: decodeUTF(bc)
         });
+
+
 
         let invite = JSON.parse(decodeUTF(bc))
         let label = invite.label

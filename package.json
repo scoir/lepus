@@ -25,6 +25,7 @@
     "@ui-kitten/components": "^4.4.1",
     "@ui-kitten/eva-icons": "^4.4.1",
     "buffer": "^6.0.3",
+    "moment": "^2.29.1",
     "react": "16.11.0",
     "react-native": "^0.62.2",
     "react-native-camera": "^3.23.1",

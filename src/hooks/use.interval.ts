@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 
 export function useInterval(callback, delay) {
   const savedCallback = useRef();
@@ -16,9 +16,13 @@ export function useInterval(callback, delay) {
             savedCallback.current();
         }
     }
+
     if (delay !== null) {
-      let id = setInterval(tick, delay);
-      return () => clearInterval(id);
+      const id = setInterval(tick, delay);
+      return () => {
+          console.log("attempting to clear", id)
+          clearInterval(id)
+      };
     }
   }, [delay]);
 }

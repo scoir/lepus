@@ -8,6 +8,7 @@ export class Connection {
         readonly name: string,
         readonly their_did: string,
         readonly my_did: string,
+        readonly last_updated: string,
         readonly ServiceEndPoint: string,
         readonly RecipientKeys: [string],
         readonly RoutingKeys: [string],

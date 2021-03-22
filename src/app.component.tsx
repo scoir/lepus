@@ -26,7 +26,7 @@ export default (): React.ReactFragment => {
         return firebase.auth().onAuthStateChanged(onAuthStateChanged);
     }, []);
 
-    if (initializing) {
+    if (initializing && user.uid != "") {
         return <React.Fragment/>
     }
 

@@ -1,6 +1,4 @@
 import Rx from 'rxjs/Rx';
-import {encode as encodeBase64} from "@stablelib/base64";
-import firestore from '@react-native-firebase/firestore';
 
 
 export const CreateWallet = () => {

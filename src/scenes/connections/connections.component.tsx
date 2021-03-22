@@ -17,7 +17,7 @@ import {MenuIcon, SearchIcon} from '../../assets/icons';
 import {Toolbar} from "../../components/toolbar.component";
 import {encodeURLSafe as encodeB64} from "@stablelib/base64";
 import {StateContext} from '../../state'
-import {useInterval} from '../../hooks/use.interval'
+import Moment from 'moment';
 
 export const ConnectionsScreen = (props: ConnectionsScreenProps): ListElement => {
     const {keyManager, wallet} = useContext(StateContext)
@@ -36,16 +36,15 @@ export const ConnectionsScreen = (props: ConnectionsScreenProps): ListElement =>
     }, [refreshing]);
 
 
-    useInterval(() => {
-       // Your custom logic here
+    useEffect(() => {
         let body = '{}';
 
-        listConnections(body, function (conns) {
-            setConnections(conns);
-        })
-    }, 1000);
-
-    useEffect(() => {
+        return props.navigation.addListener('focus', () => {
+            listConnections(body, function (conns) {
+                console.log(conns);
+                setConnections(conns);
+            })
+        });
     }, []);
 
     function handleErrors(response) {
@@ -112,7 +111,7 @@ export const ConnectionsScreen = (props: ConnectionsScreenProps): ListElement =>
             <Text
                 appearance='hint'
                 category='c1'>
-                {item.their_did}
+                {Moment(item.last_updated).calendar()}
             </Text>
         </ListItem>
     );

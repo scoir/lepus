@@ -25,7 +25,7 @@ export const SigninView = (props: SignInScreenProps): React.ReactElement => {
       if(email === '' && password === '') {
         Alert.alert('Enter details to signin!')
       } else {
-          setLoading(true)
+        setLoading(true)
         firebase
         .auth()
         .signInWithEmailAndPassword(email, password)
