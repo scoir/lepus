@@ -5,7 +5,7 @@ import androidx.annotation.NonNull;
 import com.google.gson.annotations.SerializedName;
 
 public class Credential {
-    @SerializedName("name") public String Name;
+    @SerializedName("comment") public String Name;
     @SerializedName("id") public String SNID;
     @SerializedName("context") public String[] SNContext;
     @SerializedName("type") public String[] SNType;

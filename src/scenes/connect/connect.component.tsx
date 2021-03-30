@@ -38,10 +38,8 @@ export const ConnectScreen = (props: ConnectScreenProps): SafeAreaLayoutElement 
 
         let bc = decodeB64(barcode.data);
         let body = JSON.stringify({
-            invitation: decodeUTF(bc)
+            invitation: barcode.data
         });
-
-
 
         let invite = JSON.parse(decodeUTF(bc))
         let label = invite.label
@@ -62,8 +60,6 @@ export const ConnectScreen = (props: ConnectScreenProps): SafeAreaLayoutElement 
     };
 
     const connect = (body) => {
-        console.log(wallet.getCloudAgentId())
-
         let key = keyManager.sign(body)
         fetch("http://10.0.2.2:11004/cloudagents/invitation", {
             method: "POST",

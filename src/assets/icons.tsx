@@ -32,3 +32,7 @@ export const ConnectionsIcon = (style): IconElement => (
 export const CredentialsIcon = (style): IconElement => (
     <Icon {...style} name='briefcase-outline'/>
 );
+
+export const AlertTriangle = (style): IconElement => (
+    <Icon {...style} name='alert-triangle-outline'/>
+);

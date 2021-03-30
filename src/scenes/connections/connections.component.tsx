@@ -1,14 +1,14 @@
 import React, {useEffect, useContext} from 'react';
-import {FlatList, ListRenderItemInfo, NativeModules, RefreshControl, SafeAreaView} from 'react-native';
+import {ListRenderItemInfo} from 'react-native';
 import {ConnectionsScreenProps} from "../../navigation/connections.navigator";
 import {
     Input,
     Layout,
+    List,
     ListElement,
     ListItem,
     ListItemElement,
     StyleService,
-    Text,
     useStyleSheet
 } from "@ui-kitten/components";
 import {Connection} from "../../data/connection.model";
@@ -104,15 +104,10 @@ export const ConnectionsScreen = (props: ConnectionsScreenProps): ListElement =>
     const renderConnection = ({item}: ListRenderItemInfo<Connection>): ListItemElement => (
         <ListItem
             style={styles.item}
-            onPress={() => navigateConnectionDetails(item)}>
-            <Text category='s1'>
-                {item.name}
-            </Text>
-            <Text
-                appearance='hint'
-                category='c1'>
-                {Moment(item.last_updated).calendar()}
-            </Text>
+            onPress={() => navigateConnectionDetails(item)}
+            title={item.name}
+            description={Moment(item.last_updated).calendar()}
+        >
         </ListItem>
     );
 
@@ -127,18 +122,16 @@ export const ConnectionsScreen = (props: ConnectionsScreenProps): ListElement =>
                 style={styles.filterInput}
                 placeholder='Search'
                 value={query}
-                icon={SearchIcon}
+                accessoryRight={SearchIcon}
                 onChangeText={onChangeQuery}
             />
-            <SafeAreaView style={styles.container}>
-                <RefreshControl refreshing={refreshing} onRefresh={onRefresh}/>
-                <FlatList
-                    style={styles.list}
-                    data={connections}
-                    keyExtractor={({id}, index) => id}
-                    renderItem={renderConnection}
-                />
-            </SafeAreaView>
+            <List
+                style={styles.list}
+                data={connections}
+                keyExtractor={({id}, index) => id}
+                renderItem={renderConnection}
+                numColumns={1}
+            />
         </Layout>
     );
 }

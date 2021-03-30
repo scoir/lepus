@@ -1,9 +1,10 @@
 import React from 'react';
 import {StyleSheet, View} from 'react-native';
-import {Layout, LayoutElement, Text} from '@ui-kitten/components';
+import {Layout, LayoutElement, Text, TopNavigation, TopNavigationAction} from '@ui-kitten/components';
 import {ConnectionsDetailsScreenProps} from '../../navigation/connections.navigator';
 import {Toolbar} from '../../components/toolbar.component';
 import {Connection} from '../../data/connection.model';
+import {BackIcon} from "../../assets/icons";
 
 export type ConnectionsDetailsRouteParams = {
     connection: Connection;
@@ -12,12 +13,16 @@ export type ConnectionsDetailsRouteParams = {
 export const ConnectionsDetailsScreen = (props: ConnectionsDetailsScreenProps): LayoutElement => {
 
     const {connection} = props.route.params;
+    const renderBackAction = () => (
+      <TopNavigationAction icon={BackIcon} onPress={props.navigation.goBack}/>
+    );
 
     return (
         <React.Fragment>
-            <Toolbar
-                title={connection.name}
-                onBackPress={props.navigation.goBack}
+            <TopNavigation
+                alignment="center"
+                title="Connection Details"
+                accessoryLeft={renderBackAction}
             />
             <Layout style={styles.container}>
                 <View style={styles.detailsContainer}>

@@ -22,8 +22,8 @@
     "@stablelib/base64": "^1.0.0",
     "@stablelib/ed25519": "^1.0.1",
     "@stablelib/utf8": "^1.0.0",
-    "@ui-kitten/components": "^4.4.1",
-    "@ui-kitten/eva-icons": "^4.4.1",
+    "@ui-kitten/components": "^5.0.0",
+    "@ui-kitten/eva-icons": "^5.0.0",
     "buffer": "^6.0.3",
     "moment": "^2.29.1",
     "react": "16.11.0",
@@ -35,7 +35,9 @@
     "react-native-reanimated": "^1.8.0",
     "react-native-safe-area-context": "^0.7.3",
     "react-native-screens": "^2.7.0",
-    "react-native-svg": "^12.1.0"
+    "react-native-svg": "^12.1.0",
+    "rxjs": "^6.6.7",
+    "rxjs-compat": "^6.6.7"
   },
   "devDependencies": {
     "@babel/core": "^7.6.2",

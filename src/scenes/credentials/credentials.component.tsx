@@ -16,16 +16,39 @@ import {Credential} from "../../data/credential.model";
 import {AppRoute} from "../../navigation/app-routes";
 import {MenuIcon, SearchIcon} from '../../assets/icons';
 import {Toolbar} from "../../components/toolbar.component";
-import {Connection} from "../../data/connection.model";
+import {encodeURLSafe as encodeB64} from "@stablelib/base64";
+import {keyManager, wallet} from "../../state";
+
+function listCredentials(body, success) {
+    if (wallet.getCloudAgentId() === undefined) {
+        success([])
+        return
+    }
+
+    let key = keyManager.sign(body)
+    fetch("http://10.0.2.2:11004/cloudagents/credentials", {
+        method: "POST",
+        headers: {
+            Accept: "application/json",
+            'Content-Type': "application/json",
+            'x-canis-cloud-agent-id': wallet.getCloudAgentId(),
+            'x-canis-cloud-agent-signature': encodeB64(key),
+        },
+        body: body
+    })
+        .then(function (response) {
+            response.json().then(function (json) {
+                success(json.credentials)
+            })
+            .catch(error => console.log("Err:" + error.message));
+        })
+
+}
+
 
 export const CredentialsScreen = (props: CredentialsScreenProps): ListElement => {
     const unpack = (data) => {
-        let d = JSON.parse(data);
-
-        if ('value' in d) {
-            return d.value
-        }
-        return d;
+        return Object.setPrototypeOf(data, Credential.prototype);
     }
 
     const [credentials, setCredentials] = React.useState<Credential[]>([]);
@@ -34,28 +57,28 @@ export const CredentialsScreen = (props: CredentialsScreenProps): ListElement =>
 
     useEffect(() => {
         return props.navigation.addListener('focus', () => {
-            NativeModules.Canis.listCredentials((data) => {
-                setCredentials(unpack(data));
-            }, (err) => {
-                console.log("listCredentials error", err);
-            });
+            let body = '{}';
+            listCredentials(body, function (data) {
+                let creds = data.map(cred => {
+                    return unpack(cred)
+                })
+                setCredentials(creds);
+            })
         });
     }, []);
 
 
     const onChangeQuery = (query: string): void => {
-        NativeModules.Canis.listCredentials((data) => {
-            let remote = unpack(data)
+        let body = '{}';
+        listCredentials(body, function (remote) {
             const creds: Credential[] = remote.filter((cred: Credential): boolean => {
                 console.log(cred)
-                return cred.name.toLowerCase().includes(query.toLowerCase());
+                return cred.comment.toLowerCase().includes(query.toLowerCase());
             });
 
             setCredentials(creds);
             setQuery(query);
-        }, (err) => {
-            console.log("listCredentials error", err);
-        });
+        })
     };
 
     const navigateCredentialDetails = (credential: Credential): void => {
@@ -65,15 +88,11 @@ export const CredentialsScreen = (props: CredentialsScreenProps): ListElement =>
     const renderCredential = ({item}: ListRenderItemInfo<Credential>): ListItemElement => (
         <ListItem
             style={styles.item}
-            onPress={() => { navigateCredentialDetails(item)}}>
-            <Text category='s1'>
-                {item.name}
-            </Text>
-            <Text
-                appearance='hint'
-                category='c1'>
-                {item.id}
-            </Text>
+            key = {item.credential_id}
+            onPress={() => { navigateCredentialDetails(item)}}
+            title={item.comment}
+            description={item.statusString()}
+        >
         </ListItem>
     );
 
@@ -88,13 +107,13 @@ export const CredentialsScreen = (props: CredentialsScreenProps): ListElement =>
                 style={styles.filterInput}
                 placeholder='Search'
                 value={query}
-                icon={SearchIcon}
+                accessoryRight={SearchIcon}
                 onChangeText={onChangeQuery}
             />
             <FlatList
                 style={styles.list}
                 data={credentials}
-                keyExtractor={({id}, index) => id}
+                keyExtractor={({credential_id}, index) => credential_id}
                 renderItem={renderCredential}
             />
         </Layout>
